@@ -3,8 +3,6 @@ name: CI/CD
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
   workflow_dispatch:
     inputs:
@@ -15,7 +13,7 @@ env:
   IMAGE_NAME: "webeng-project-dhbw"
 
 jobs:
-  build_and_push:
+  build_push_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
