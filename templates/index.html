@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8"/>
-        <title>Webeng Project</title>
-    </head>
-    <body>
-        <h1>Hello World from project!</h1>
-    </body>
-</html>
+{% extends "base.html" %}
+{% block title %}Webeng Project{% endblock %}
+{% block link%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+{% endblock %}
+{% block script%}
+<script src="{{url_for('static', filename='js/index.js')}}"></script>
+{% endblock %}
+{% block content %}
+<h1>Hello World from project!</h1>
+{% endblock %}
