@@ -17,6 +17,8 @@ services:
     ports:
       - "127.0.0.1:5001:5001"
     restart: on-failure
+    env_file:
+      - .env
     tty: true
     volumes:
       - db_migrations:/flask-deploy/migrations

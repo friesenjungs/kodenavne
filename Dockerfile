@@ -15,4 +15,4 @@ RUN pip install --upgrade pip \
     && pip install --no-cache-dir wheel \
     && pip install --no-cache-dir -r requirements.txt
 
-CMD ["./container-start-script.sh"]
+CMD ["bash", "./container-start-script.sh"]
