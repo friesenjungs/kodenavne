@@ -3,7 +3,7 @@ version: "3"
 services:
   db:
     image: postgres:latest
-    container_name: postgres-prod
+    container_name: postgres-dev
     restart: on-failure
     env_file:
       - .env
