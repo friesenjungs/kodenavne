@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres-dev
+    restart: on-failure
+    env_file:
+      - .env
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+    container_name: webeng-project-dhbw
+    ports:
+      - "127.0.0.1:5001:5001"
+    restart: on-failure
+    env_file:
+      - .env
+    tty: true
+    volumes:
+      - db_migrations:/flask-deploy/migrations
+    depends_on:
+      - db
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4
+    restart: on-failure
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:5002:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+volumes:
+  db:
+  db_migrations:
+  pgadmin:
