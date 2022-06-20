@@ -11,17 +11,17 @@
 <div class="d-flex vh-100">
     <div class="container align-self-center text-center w-50" style="border-radius: 10px">
         <h1 class="mb-3">Project title</h1>
-        <form action="/room/create">
+        <form class="text-dark" method="post" action="/room/create">
             <div class="form-floating mb-3">
-                <input type="text" id="floatingUsername" name="username" class="form-control"></input>
-                <label for="floatingUsername">Username</label>
+                <input type="text" id="idUsernameInput" name="username" class="form-control"></input>
+                <label for="idUsernameInput">Username</label>
             </div>
             <div class="form-floating mb-3">
-                <select id="floatingLanguage" class="form-select">
+                <select id="idLanguageSelect" class="form-select">
                     <option selected value="en">English</option>
                     <option value="de">Deutsch</option>
                 </select>
-                <label for="floatingLanguage">Select your Language</label>
+                <label for="idLanguageSelect">Select your Language</label>
             </div>
             <button id="submit" type="submit" class="btn btn-primary mb-3" onclick="createRoom()">Create Room</button>
         </form>
