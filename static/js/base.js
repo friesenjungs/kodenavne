@@ -8,4 +8,5 @@ function toggleTheme(){
     document.getElementById("idBody").classList.toggle('bg-dark');
     document.getElementById("idBody").classList.toggle('text-light');
     document.getElementById("idTheme").classList.toggle('bi-sun')
+    $('#howtoplay').toggleClass('light');
 }

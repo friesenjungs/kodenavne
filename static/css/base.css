@@ -7,3 +7,24 @@
               user-select: none; /* Non-prefixed version, currently
                                     supported by Chrome, Edge, Opera and Firefox */
 }
+
+#howtoplay {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  color: white;
+}
+#howtoplay:focus {
+  border: none;
+}
+#howtoplay.light {
+  color: black;
+}
+
+.modal-title {
+  color: black;
+}
+
+.modal-body {
+  color: black;
+}

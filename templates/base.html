@@ -26,7 +26,23 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto align-middle">
                         <li class="nav-item">
-                            <a class="nav-link" href="https://github.com/4KevR/webeng-project-dhbw/wiki/The-Game" target="_blank" style="color:inherit">How to play!</a>
+                            <button type="button" id="howtoplay" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg">How to play!</button>
+                            <div id="howtoplaymodal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">How to play!</h5>
+                                            <button type="button" class="close" onclick="$('#howtoplaymodal').modal('hide');" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Creating a room:<br> 1. Enter a Username<br> 2. Select a language<br> 3. Click on the Create Room button<br> 4. Share the game room's code with other players</p>
+                                            <p>Joining a room:<br> 1. Enter the room's code<br> 2. Click on the Join button</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                     <div class="d-flex">
