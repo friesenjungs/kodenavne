@@ -12,13 +12,9 @@
   border: none;
   background-color: transparent;
   outline: none;
-  color: white;
 }
 #howtoplay:focus {
   border: none;
-}
-#howtoplay.light {
-  color: black;
 }
 
 .modal-title {
