@@ -1,4 +1,4 @@
-createRoom = () => {
+const createRoom = () => {
     localStorage.setItem("username", document.getElementById("idUsernameInput").value);
     localStorage.setItem("language", document.getElementById("idLanguageSelect").value);
 }
