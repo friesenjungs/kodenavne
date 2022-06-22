@@ -1,13 +1,17 @@
 document.addEventListener("DOMContentLoaded", function(){
-    this.usernameInput = document.getElementById("idUsernameInput");
-    this.languageSelect = document.getElementById("idLanguageSelect");
-    var username = localStorage.getItem("username");
-    var language = localStorage.getItem("language");
-    username ? this.usernameInput.value = username : console.log("no local username");
-    language ? this.languageSelect.value = language : console.log("no local language");
+    const usernameInput = document.getElementById("idUsernameInput");
+    const languageSelect = document.getElementById("idLanguageSelect");    
+    const username = localStorage.getItem("username");
+    const language = localStorage.getItem("language");
+    if(username) usernameInput.value = username;
+    if(language) languageSelect.value = language;
+
+    document.getElementById("idCreateRoomBtn").addEventListener("click", createRoom)
 });
 
 function createRoom(){
-    localStorage.setItem("username", this.usernameInput.value);
-    localStorage.setItem("language", this.languageSelect.value);
+    const usernameInput = document.getElementById("idUsernameInput");
+    const languageSelect = document.getElementById("idLanguageSelect");
+    localStorage.setItem("username", document.getElementById("idUsernameInput").value);
+    localStorage.setItem("language", document.getElementById("idLanguageSelect").value);
 }
