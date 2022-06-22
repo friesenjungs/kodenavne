@@ -44,7 +44,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/4kevr/${{ env.IMAGE_NAME }}:latest
+          tags: ghcr.io/friesenjungs/${{ env.IMAGE_NAME }}:latest
           labels: commit_sha_short=${{ steps.vars.outputs.sha_short }}
         
       - uses: darmiel/yadwh-action@v1
