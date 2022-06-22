@@ -1,4 +1,9 @@
-document.addEventListener("DOMContentLoaded", function(){
+createRoom = () => {
+    localStorage.setItem("username", document.getElementById("idUsernameInput").value);
+    localStorage.setItem("language", document.getElementById("idLanguageSelect").value);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
     const usernameInput = document.getElementById("idUsernameInput");
     const languageSelect = document.getElementById("idLanguageSelect");    
     const username = localStorage.getItem("username");
@@ -8,10 +13,3 @@ document.addEventListener("DOMContentLoaded", function(){
 
     document.getElementById("idCreateRoomBtn").addEventListener("click", createRoom)
 });
-
-function createRoom(){
-    const usernameInput = document.getElementById("idUsernameInput");
-    const languageSelect = document.getElementById("idLanguageSelect");
-    localStorage.setItem("username", document.getElementById("idUsernameInput").value);
-    localStorage.setItem("language", document.getElementById("idLanguageSelect").value);
-}
