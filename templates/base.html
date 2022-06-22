@@ -17,7 +17,7 @@
     <body id="idBody" class="bg-dark text-light">
         <nav id="idNavBar" class="navbar navbar-expand-sm">
             <div class="container-fluid">
-                <a class="navbar-brand" style="color:inherit">Project title</a>
+                <a class="navbar-brand" style="color:inherit">Kodenavne</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -26,19 +26,57 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto align-middle">
                         <li class="nav-item">
-                            <button type="button" id="howtoplay" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg" style="color:inherit;">How to play!</button>
-                            <div id="howtoplaymodal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg" role="document">
+                            <button type="button" id="howtoplay" data-bs-toggle="modal"
+                                    data-bs-target="#idHowtoPlayModal" style="color:inherit">How to play!</button>
+                            <div id="idHowtoPlayModal" class="modal fade" tabindex="-1"
+                                 aria-labelledby="idHowtoPlayModalTitle"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">How to play!</h5>
-                                            <button type="button" class="close" onclick="$('#howtoplaymodal').modal('hide');" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
+                                            <h5 class="modal-title" id="idHowtoPlayModalTitle">How to play Kodenavne!</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <p>Creating a room:<br> 1. Enter a Username<br> 2. Select a language<br> 3. Click on the Create Room button<br> 4. Share the game room's code with other players</p>
-                                            <p>Joining a room:<br> 1. Enter the room's code<br> 2. Click on the Join button</p>
+                                            <p style="text-align:justify">
+                                            <h5>General</h5>
+                                            <p>
+                                                Codenames is a game for two teams. There is one spymaster and at least
+                                                one operative per team. It is played with a grid of 25 words, some of
+                                                them assigned to one of the teams. Only the spymaster can see which
+                                                words belong to which team. The spymasters take turns giving a clue to
+                                                their operative, trying to guide him to guess their team's words. The
+                                                team that reveals all their words first wins.
+                                            </p>
+                                            <h5>The Spymaster</h5>
+                                            <p>
+                                                Each turn starts with the Spymaster giving a clue to their operative. A
+                                                clue consists of a word and the number of words in the team color that
+                                                it relates to.
+                                            </p>
+                                            <h5>The Operative</h5>
+                                            <p>
+                                                The Operatives guess the team's words based on the Spymaster's clue. If
+                                                the operator guesses a word correctly, he may guess again. The goal is
+                                                to guess as many words as the spymaster has indicated. He can also guess
+                                                unsolved clues from previous rounds until the maximum number of guesses
+                                                (clue number + 1) is reached.
+                                                The turn can end in different ways. If a word is revealed on a neutral
+                                                card or in the opponent's color, the Operative may not give another
+                                                Guess. The turn can also be ended manually or by reaching the maximum
+                                                number of guesses.
+                                            </p>
+                                            <h5>Winning and loosing</h5>
+                                            <p>
+                                                A team wins when all the words of their own color have been guessed.
+                                                They lose the game by revealing the black card.
+                                            </p>
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
@@ -48,7 +86,8 @@
                     <div class="d-flex">
                         <input id="idCodeInput" class="form-control me-1" type="text" placeholder="Enter Code!">
                         <button class="btn btn-outline-primary me-3" onclick="joinRoom()">Join</button>
-                        <button class="btn btn-outline-primary" onclick="toggleTheme()"><i id="idTheme" class="bi bi-moon"></i></button>
+                        <button class="btn btn-outline-primary" onclick="toggleTheme()"><i id="idTheme"
+                               class="bi bi-moon"></i></button>
                     </div>
                 </div>
             </div>
@@ -62,11 +101,12 @@
                 <a class="me-3 ms-3 mb-md-0">
 
                 </a>
-                <span class="">© 2021</span>
+                <span class="">© 2022 Friesenjungs</span>
             </div>
             <ul class="nav col-md-4 justify-content-end list-unstyled d-flex me-3">
                 <li><a class="me-3" href="/impressum" title="Impressum" style="color:inherit">Impressum</a></li>
-                <li><a class="" href="https://github.com/4KevR/webeng-project-dhbw" title="View project on GitHub" style="color:inherit"><i class="bi bi-github"></i></a></li>
+                <li><a class="" href="https://github.com/friesenjungs/kodenavne" title="View project on GitHub"
+                       style="color:inherit"><i class="bi bi-github"></i></a></li>
             </ul>
         </footer>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
