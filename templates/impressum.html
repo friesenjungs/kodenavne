@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Impressum{% endblock %}
+{% block link%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/impressum.css')}}">
+{% endblock %}
+{% block script%}
+<script src="{{url_for('static', filename='js/impressum.js')}}"></script>
+{% endblock %}
+{% block content %}
+
+<div class="d-flex vh-100">
+    <main role="main" class="container">
+        <div class="row">
+            <div class="col-md-8 blog-main" style="margin-top: 3%;">
+                <div class="blog-post">
+                    <h1 class="blog-post-title">Impressum</h1>
+                    <p style="margin-top: 5%;"><b>Friesenjungs SE</b><br>Am Deich 1<br>26969 Butjadingen<br>Deutschland</p>
+                    <p style="margin-top: 5%;"><b>Kontakt</b><br>Telefon: 1234567890<br>Fax: 0987654321<br>E-Mail: kontakt@friesenjungs.com</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+{% endblock %}
