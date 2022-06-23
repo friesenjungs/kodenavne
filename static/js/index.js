@@ -11,5 +11,5 @@ document.addEventListener("DOMContentLoaded", () => {
     if(username) usernameInput.value = username;
     if(language) languageSelect.value = language;
 
-    document.getElementById("idCreateRoomBtn").addEventListener("click", createRoom)
+    document.getElementById("idCreateRoomBtn").addEventListener("click", createRoom);
 });
