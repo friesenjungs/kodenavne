@@ -14,5 +14,5 @@ const toggleTheme = () => {
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("idJoinRoomBtn").addEventListener("click", joinRoom);
     document.getElementById("idToggleThemeBtn").addEventListener("click", toggleTheme);
-    if(localStorage.getItem("theme") == "light") toggleTheme();
+    if(localStorage.getItem("theme") === "light") toggleTheme();
 });

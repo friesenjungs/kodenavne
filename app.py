@@ -14,6 +14,10 @@ def index():
     """main page"""
     return render_template("index.html")
 
+@app.route("/room/<roomID>")
+def joinRoom(roomID):
+    return render_template("roomnotfound.html")
+
 
 if __name__ == "__main__":
     app.run(host='webeng-project-dhbw', port=5000)
