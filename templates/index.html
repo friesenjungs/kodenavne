@@ -13,17 +13,19 @@
         <h1 class="mb-3">Kodenavne</h1>
         <form class="text-dark" method="post" action="/room/create">
             <div class="form-floating mb-3">
-                <input type="text" id="idUsernameInput" name="username" placeholder="Username" class="form-control"></input>
+                <input type="text" id="idUsernameInput" name="username" placeholder="Username"
+                       class="form-control"></input>
                 <label for="idUsernameInput">Username</label>
             </div>
             <div class="form-floating mb-3">
                 <select id="idLanguageSelect" class="form-select">
                     <option selected value="en">English</option>
                     <option value="de">Deutsch</option>
+                    <option value="platt">Plattdeutsch</option>
                 </select>
-                <label for="idLanguageSelect">Select your Language</label>
+                <label for="idLanguageSelect">Select game Language</label>
             </div>
-            <button id="idCreateRoomBtn" type="submit" class="btn btn-primary mb-3" >Create Room</button>
+            <button id="idCreateRoomBtn" type="submit" class="btn btn-primary mb-3">Create Room</button>
         </form>
     </div>
 </div>

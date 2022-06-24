@@ -43,24 +43,24 @@
                                             <p style="text-align:justify">
                                             <h5>General</h5>
                                             <p>
-                                                Codenames is a game for two teams. There is one spymaster and at least
-                                                one operative per team. It is played with a grid of 25 words, some of
-                                                them assigned to one of the teams. Only the spymaster can see which
-                                                words belong to which team. The spymasters take turns giving a clue to
-                                                their operative, trying to guide him to guess their team's words. The
+                                                Kodenavne is a game for two teams. There is one Spymaster and at least
+                                                one Operative per team. It is played with a grid of 25 words, some of
+                                                them assigned to one of the teams. Only the Spymaster can see which
+                                                words belong to which team. The Spymasters take turns giving a clue to
+                                                their Operative, trying to guide him to guess their team's words. The
                                                 team that reveals all their words first wins.
                                             </p>
                                             <h5>The Spymaster</h5>
                                             <p>
-                                                Each turn starts with the Spymaster giving a clue to their operative. A
+                                                Each turn starts with the Spymaster giving a clue to his Operative. A
                                                 clue consists of a word and the number of words in the team color that
                                                 it relates to.
                                             </p>
                                             <h5>The Operative</h5>
                                             <p>
                                                 The Operatives guess the team's words based on the Spymaster's clue. If
-                                                the operator guesses a word correctly, he may guess again. The goal is
-                                                to guess as many words as the spymaster has indicated. He can also guess
+                                                the Operative guesses a word correctly, he may guess again. The goal is
+                                                to guess as many words as the Spymaster has indicated. He can also guess
                                                 unsolved clues from previous rounds until the maximum number of guesses
                                                 (clue number + 1) is reached.
                                                 The turn can end in different ways. If a word is revealed on a neutral
@@ -85,10 +85,14 @@
                         </li>
                     </ul>
                     <div class="d-flex">
-                        <input id="idCodeInput" class="form-control me-1" type="text" placeholder="Enter Code!">
-                        <button id="idJoinRoomBtn" class="btn btn-outline-primary me-3">Join</button>
-                        <button id="idToggleThemeBtn" class="btn btn-outline-primary"><i id="idTheme"
-                               class="bi bi-moon"></i></button>
+                        <form action="/room/join" method="post" style="display:inherit">
+                            <input id="idCodeInput" class="form-control me-1" name="code" type="text" minlength="6" maxlength="6"
+                               placeholder="Enter Code!" oninvalid="this.setCustomValidity('Enter six-digit room code!')" oninput="this.setCustomValidity('')">
+                            <button id="idJoinRoomBtn" class="btn btn-outline-primary me-3" type="submit">Join</button>
+                        </form>
+                        
+                        <a id="idToggleThemeBtn" class="btn btn-outline-primary"><i id="idTheme"
+                               class="bi bi-moon"></i></a>
                     </div>
                 </div>
             </div>
@@ -96,7 +100,7 @@
 
         {% block content %}
         {% endblock %}
-        
+
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top fixed-bottom">
             <div class="d-flex align-items-center">
                 <a class="me-3 ms-3 mb-md-0">
