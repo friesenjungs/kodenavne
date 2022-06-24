@@ -8,17 +8,112 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
               integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
               crossorigin="anonymous">
+        <script src="{{url_for('static', filename='js/base.js')}}"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
         <link rel="stylesheet" href="{{url_for('static', filename='css/base.css')}}">
         {% block script %}{% endblock %}
     </head>
 
-    <body>
-        <div>
-            {% block content %}
-            {% endblock %}
-        </div>
-        <script src="https://code.jquery.com/jquery-3.6.0.js"
-                integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <body id="idBody" class="d-flex flex-column vh-100 bg-dark text-light">
+        <nav id="idNavBar" class="navbar navbar-expand-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand" style="color:inherit">Kodenavne</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto align-middle">
+                        <li class="nav-item">
+                            <button type="button" id="howtoplay" data-bs-toggle="modal"
+                                    data-bs-target="#idHowtoPlayModal" style="color:inherit">How to play!</button>
+                            <div id="idHowtoPlayModal" class="modal fade" tabindex="-1"
+                                 aria-labelledby="idHowtoPlayModalTitle"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="idHowtoPlayModalTitle">How to play Kodenavne!
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p style="text-align:justify">
+                                            <h5>General</h5>
+                                            <p>
+                                                Kodenavne is a game for two teams. There is one Spymaster and at least
+                                                one Operative per team. It is played with a grid of 25 words, some of
+                                                them assigned to one of the teams. Only the Spymaster can see which
+                                                words belong to which team. The Spymasters take turns giving a clue to
+                                                their Operative, trying to guide him to guess their team's words. The
+                                                team that reveals all their words first wins.
+                                            </p>
+                                            <h5>The Spymaster</h5>
+                                            <p>
+                                                Each turn starts with the Spymaster giving a clue to his Operative. A
+                                                clue consists of a word and the number of words in the team color that
+                                                it relates to.
+                                            </p>
+                                            <h5>The Operative</h5>
+                                            <p>
+                                                The Operatives guess the team's words based on the Spymaster's clue. If
+                                                the Operative guesses a word correctly, he may guess again. The goal is
+                                                to guess as many words as the Spymaster has indicated. He can also guess
+                                                unsolved clues from previous rounds until the maximum number of guesses
+                                                (clue number + 1) is reached.
+                                                The turn can end in different ways. If a word is revealed on a neutral
+                                                card or in the opponent's color, the Operative may not give another
+                                                Guess. The turn can also be ended manually or by reaching the maximum
+                                                number of guesses.
+                                            </p>
+                                            <h5>Winning and loosing</h5>
+                                            <p>
+                                                A team wins when all the words of their own color have been guessed.
+                                                They lose the game by revealing the black card.
+                                            </p>
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="d-flex">
+                        <form action="/room/join" method="post" style="display:inherit">
+                            <input id="idCodeInput" class="form-control me-1" name="code" type="text" minlength="6" maxlength="6"
+                               placeholder="Enter Code!" oninvalid="this.setCustomValidity('Enter six-digit room code!')" oninput="this.setCustomValidity('')">
+                            <button id="idJoinRoomBtn" class="btn btn-outline-primary me-3" type="submit">Join</button>
+                        </form>
+                        
+                        <a id="idToggleThemeBtn" class="btn btn-outline-primary"><i id="idTheme"
+                               class="bi bi-moon"></i></a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        {% block content %}
+        {% endblock %}
+
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top fixed-bottom">
+            <div class="d-flex align-items-center">
+                <a class="me-3 ms-3 mb-md-0">
+
+                </a>
+                <span class="">© 2022 Friesenjungs</span>
+            </div>
+            <ul class="nav col-md-4 justify-content-end list-unstyled d-flex me-3">
+                <li><a class="me-3" href="/impressum" title="Impressum" style="color:inherit">Impressum</a></li>
+                <li><a class="" href="https://github.com/friesenjungs/kodenavne" title="View project on GitHub"
+                       style="color:inherit"><i class="bi bi-github"></i></a></li>
+            </ul>
+        </footer>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
                 integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
                 crossorigin="anonymous"></script>
