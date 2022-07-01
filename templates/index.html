@@ -12,20 +12,21 @@
     <div class="container text-center w-50" style="border-radius: 10px">
         <h1 class="mb-3">Kodenavne</h1>
         <form class="text-dark" method="post" action="/room/create">
-            <div class="form-floating mb-3">
-                <input type="text" id="idUsernameInput" name="username" placeholder="Username"
-                       class="form-control"></input>
-                <label for="idUsernameInput">Username</label>
-            </div>
-            <div class="form-floating mb-3">
-                <select id="idLanguageSelect" class="form-select">
-                    <option selected value="en">English</option>
-                    <option value="de">Deutsch</option>
-                    <option value="platt">Plattdeutsch</option>
-                </select>
-                <label for="idLanguageSelect">Select game Language</label>
-            </div>
             <button id="idCreateRoomBtn" type="submit" class="btn btn-primary mb-3">Create Room</button>
+        </form>
+
+        <h3 class="mb-3">or</h3>
+
+        <form class="row row-cols-lg-auto justify-content-md-center">
+            <div class="col">
+                <input id="idCodeInput" class="form-control me-1" name="code" type="text" minlength="6" maxlength="6"
+                    placeholder="Enter Code!" oninvalid="this.setCustomValidity('Enter six-digit room code!')"
+                    oninput="this.setCustomValidity('')">
+            </div>
+
+            <div class="col">
+                <button id="idJoinRoomBtn" class="btn btn-primary me-3" type="submit">Join</button>
+            </div>
         </form>
     </div>
 </div>
