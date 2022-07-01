@@ -10,7 +10,7 @@ on:
         description: 'Image version'
         required: true
 env:
-  IMAGE_NAME: "webeng-project-dhbw"
+  IMAGE_NAME: "kodenavne-prod"
 
 jobs:
   build_push_and_deploy:
@@ -44,11 +44,11 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/4kevr/${{ env.IMAGE_NAME }}:latest
+          tags: ghcr.io/friesenjungs/${{ env.IMAGE_NAME }}:latest
           labels: commit_sha_short=${{ steps.vars.outputs.sha_short }}
         
       - uses: darmiel/yadwh-action@v1
         with:
           url: 'http://webeng.4kevr.me:9830'
           name: 'BACKEND_PROD'
-          secret: ${{ secrets.STAGED_DEPLOY_SECRET }}
+          secret: ${{ secrets.DEPLOY_SECRET }}
