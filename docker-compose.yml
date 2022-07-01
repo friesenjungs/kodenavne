@@ -11,9 +11,9 @@ services:
       - db:/var/lib/postgresql/data
 
   backend:
-    build:
-      context: .
-    container_name: webeng-project-dhbw
+    build: .
+    image: kodenavne-dev
+    container_name: kodenavne-dev
     ports:
       - "127.0.0.1:5000:5000"
     restart: on-failure
