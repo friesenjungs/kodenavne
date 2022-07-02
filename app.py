@@ -1,12 +1,15 @@
+import os
 import random
 import string
 import uuid
 import json
+import fnmatch
 
 from flask import Flask, render_template, request, make_response, redirect, url_for
 from flask_socketio import SocketIO
 from flask_migrate import Migrate
-from models import db, Game, GameSession, UserSession, Role
+from models import db, Game, GameSession, UserSession
+import sqlalchemy.exc
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -59,14 +62,33 @@ def create_game_session(room_code):
 @app.before_first_request
 def populate_with_initial():
     with app.app_context():
-        with open("./db_initial/Role.json", "r") as roles:
-            roles_json = json.load(roles)
-            for role in roles_json:
-                role_name = role["role_name"]
-                if Role.query.filter_by(role_name=role_name).first() is None:
-                    new_role = Role(role_name=role_name)
-                    db.session.add(new_role)
-        db.session.commit()
+        print("Updating DB entries...")
+        entries = []
+        for file in fnmatch.filter(os.listdir(os.environ["POSTGRES_DB_DEFAULT_DATA"]), "*.json"):
+            with open(f"{os.environ['POSTGRES_DB_DEFAULT_DATA']}/{file}", "r") as init_file:
+                try:
+                    init_json = json.load(init_file)
+                    db_table_name = file.split(".json")[0]
+                    db_table = globals()[db_table_name]
+                    for entry in init_json:
+                        try:
+                            if db_table.query.filter_by(**entry).first() is None:
+                                print(f"Inserting entry {entry} to table {db_table_name}")
+                                entries.append(db_table(**entry))
+                        except sqlalchemy.exc.InvalidRequestError as e:
+                            print(e)
+                        except sqlalchemy.exc.DataError as e:
+                            print(e)
+                except json.decoder.JSONDecodeError:
+                    print(f"File {file} has no valid json format")
+                except KeyError:
+                    print(f"File {file} has no corresponding database table")
+        if len(entries) == 0:
+            print("No changes are made to DB, all entries up to date")
+        else:
+            db.session.add_all(entries)
+            db.session.commit()
+            print("Successfully applied changes to DB")
 
 
 @app.route("/")
