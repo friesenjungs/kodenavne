@@ -24,6 +24,7 @@ services:
       - db_migrations:/flask-deploy/migrations
       - ./static:/flask-deploy/static
       - ./templates:/flask-deploy/templates
+      - ./app.py:/flask-deploy/app.py
     depends_on:
       - db
 

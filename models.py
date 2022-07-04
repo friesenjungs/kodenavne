@@ -14,6 +14,7 @@ class GameSession(db.Model):
     user_name = db.Column("user_name", db.String())
     team_id = db.Column("team_id", db.Integer)
     role_id = db.Column(db.ForeignKey("ROLE.role_id"))
+    active = db.Column(db.Boolean)
 
     game = relationship("Game", back_populates="user_sessions")
     user_session = relationship("UserSession", back_populates="games")
