@@ -73,7 +73,7 @@ def populate_with_initial():
                 try:
                     init_json = json.load(init_file)
                     db_table_name = file.split(".json")[0]
-                    db_table = globals()[db_table_name]
+                    db_table = getattr(globals()["db"], db_table_name)
                     for entry in init_json:
                         try:
                             if db_table.query.filter_by(**entry).first() is None:
