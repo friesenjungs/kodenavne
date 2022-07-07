@@ -127,7 +127,7 @@ def home():
     return resp
 
 
-@app.route("/room/create", methods=['POST'])
+@app.route("/room/create", methods=['GET'])
 def create_room():
     room_code = generate_unique_room_code()
     db.database.session.add(db.Game(room_code=room_code))
