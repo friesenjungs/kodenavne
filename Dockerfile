@@ -1,5 +1,7 @@
 FROM python:3.8-slim-buster as backend-base
 
+LABEL org.opencontainers.image.source = "https://github.com/friesenjungs/kodenavne"
+
 COPY requirements.txt .
 
 RUN apt-get update -y \
