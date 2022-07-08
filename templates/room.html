@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Webeng Project{% endblock %}
 {% block link%}
-<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/room.css')}}">
 {% endblock %}
 {% block script%}
 <script src="{{url_for('static', filename='js/room.js')}}"></script>
@@ -30,6 +30,28 @@
 
 		<div id="idGameBoard" class="d-flex flex-column col-8 h-75 align-self-center">
 			<!--JS inserting WordCards here-->
+			<!--will be deleted when game starts-->
+			<div id="idGameSettings" class="d-flex flex-column align-items-center justify-content-center h-100 w-100 rounded">
+				<h1 class="text-center mt-2">Game Settings</h1>
+				<div class="form-floating mb-3 text-dark w-75">
+					<select id="idSizeSelect" class="form-select">
+						<option selected value="5">5x5</option>
+						<option value="6">6x6</option>
+						<option value="7">7x7</option>
+						<option value="8">8x8</option>
+					</select>
+					<label for="idSizeSelect">Select game size</label>
+				</div>
+				<div class="form-floating mb-3 text-dark w-75">
+					<select id="idLanguageSelect" class="form-select">
+						<option selected value="en">English</option>
+						<option value="de">Deutsch</option>
+					</select>
+					<label for="idSizeSelect">Select game language</label>
+				</div>
+				<a id="idStartGameBtn" class="btn btn-primary fw-bold">Start Game</a>
+			</div>
+			<!---->
 		</div>
 
 		<div class="col h-50 align-self-center">
