@@ -8,18 +8,19 @@
 {% endblock %}
 {% block content %}
 
-<div class="d-flex h-100 w-100 mx-0">
-	<div class="row h-100 w-100 mx-auto">
+<div class="d-flex w-100 h-100 m-0">
 
-		<div class="col h-50 align-self-center">
-			<div class="container h-50 rounded border border-primary">
+	<div class="d-flex flex-row flex-grow-1 h-100">
+
+		<div class="d-flex flex-column w-100 align-self-center mx-3">
+			<div class="d-flex flex-column h-50 border border-primary rounded p-3 mb-3">
 				<h5 class="text-center mt-2">Team 1</h6>
 					<h6 class="mt-3">Spymaster</h6>
 					3 Backflip
 					<h6 class="mt-3">Operative</h6>
 					Kevin
 			</div>
-			<div class="container h-50 rounded border border-danger mt-3">
+			<div class="d-flex flex-column h-50 border border-danger rounded p-3 mt-3">
 				<h5 class="text-center mt-2">Team 2</h6>
 					<h6 class="mt-3">Spymaster</h6>
 					Tobus
@@ -28,12 +29,12 @@
 			</div>
 		</div>
 
-		<div id="idGameBoard" class="d-flex flex-column col-8 h-75 align-self-center">
+		<div id="idGameBoard" class="d-flex flex-column align-self-center col-8 h-75">
 			<!--JS inserting WordCards here-->
 			<!--will be deleted when game starts-->
 			<div id="idGameSettings" class="d-flex flex-column align-items-center justify-content-center h-100 w-100 rounded">
-				<h1 class="text-center mt-2">Game Settings</h1>
-				<div class="form-floating mb-3 text-dark w-75">
+				<h1 class="text-center my-3">Game Settings</h1>
+				<div class="form-floating mb-2 text-dark w-75">
 					<select id="idSizeSelect" class="form-select">
 						<option selected value="5">5x5</option>
 						<option value="6">6x6</option>
@@ -42,32 +43,32 @@
 					</select>
 					<label for="idSizeSelect">Select game size</label>
 				</div>
-				<div class="form-floating mb-3 text-dark w-75">
+				<div class="form-floating mt-2 text-dark w-75">
 					<select id="idLanguageSelect" class="form-select">
 						<option selected value="en">English</option>
 						<option value="de">Deutsch</option>
 					</select>
 					<label for="idSizeSelect">Select game language</label>
 				</div>
-				<a id="idStartGameBtn" class="btn btn-primary fw-bold">Start Game</a>
+				<a id="idStartGameBtn" class="btn btn-primary mt-3 fw-bold">Start Game</a>
 			</div>
 			<!---->
 		</div>
 
-		<div class="col h-50 align-self-center">
-			<div class="container h-50 rounded border border-warning">
+		<div class="d-flex flex-column w-100 align-self-center mx-3">
+			<div class="d-flex flex-column h-50 border border-success rounded p-3 mb-3">
 				<h5 class="text-center mt-2">Team 3</h6>
 					<h6 class="mt-3">Spymaster</h6>
-					<a class="btn btn-sm btn-warning fw-bold text-light">Join</a>
+					<a class="btn btn-sm btn-success fw-bold">Join</a>
 					<h6 class="mt-3">Operative</h6>
 					Lukas
 			</div>
-			<div class="container h-50 rounded border border-success mt-3">
+			<div class="d-flex flex-column h-50 border border-warning rounded p-3 mt-3">
 				<h5 class="text-center mt-2">Team 4</h6>
 					<h6 class="mt-3">Spymaster</h6>
-					<a class="btn btn-sm btn-success fw-bold">Join</a>
+					<a class="btn btn-sm btn-warning fw-bold text-white">Join</a>
 					<h6 class="mt-3">Operative</h6>
-					<a class="btn btn-sm btn-success fw-bold">Join</a>
+					<a class="btn btn-sm btn-warning fw-bold text-white">Join</a>
 			</div>
 		</div>
 
