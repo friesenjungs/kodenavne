@@ -2,7 +2,7 @@ const namespace = '/';
 let socket;
 
 const wordPressed = (e) => {
-	//e.srcElement.classList.toggle('border')
+	e.srcElement.classList.toggle('border')
 }
 
 const createBoard = (columns, rows) => {
@@ -12,7 +12,7 @@ const createBoard = (columns, rows) => {
 		div.setAttribute("class", "d-flex flex-row h-100 justify-content-between flex-grow-1 text-align-center");
 		for (let j = 0; j < columns; j++) {
 			const newWord = document.createElement("a");
-			newWord.setAttribute("class", "d-flex btn border w-100 fw-bold m-1 align-items-center justify-content-center flex-grow-1");
+			newWord.setAttribute("class", "d-flex btn border myborder w-100 fw-bold m-1 align-items-center justify-content-center flex-grow-1");
 			newWord.setAttribute("style", "color: inherit");
 			newWord.addEventListener("click", wordPressed)
 			newWord.appendChild(document.createTextNode(`Word ${i * rows + j + 1}`));

@@ -29,7 +29,7 @@
 
 		<nav id="idNavBar" class="navbar navbar-expand-sm">
 			<div class="container-fluid">
-				<a class="navbar-brand" style="color:inherit">Kodenavne</a>
+				<a href="/" class="navbar-brand" style="color:inherit">Kodenavne</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
 						aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
@@ -37,9 +37,9 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav me-auto align-middle">
 						<li class="nav-item">
-							<button type="button" id="howtoplay" data-bs-toggle="modal" data-bs-target="#idHowtoPlayModal"
-									style="color:inherit">How to play!</button>
-							<div id="idHowtoPlayModal" class="modal fade" tabindex="-1" aria-labelledby="idHowtoPlayModalTitle"
+							<a type="button" id="idHowtoPlayButton" data-bs-toggle="modal" data-bs-target="#idHowtoPlayModal"
+									style="color:inherit">How to play!</a>
+							<div id="idHowtoPlayModal" class="modal fade text-dark" tabindex="-1" aria-labelledby="idHowtoPlayModalTitle"
 								 aria-hidden="true">
 								<div class="modal-dialog modal-lg">
 									<div class="modal-content">
@@ -106,7 +106,7 @@
 							   class="bi bi-moon"></i></a>
 						<a id="idSettingsBtn" class="btn btn-outline-primary" data-bs-toggle="modal"
 						   data-bs-target="#idSettingsModal"><i id="idTheme" class="bi bi-gear"></i></a>
-						<div id="idSettingsModal" class="modal fade" tabindex="-1" aria-hidden="true">
+						<div id="idSettingsModal" class="modal fade text-dark" tabindex="-1" aria-hidden="true">
 							<div class="modal-dialog">
 								<div class="modal-content rounded-4 shadow">
 									<div class="modal-header p-5 pb-4 border-bottom-0">
