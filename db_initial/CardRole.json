@@ -1,0 +1,11 @@
+[
+  {
+    "cardrole_name": "agent"
+  },
+  {
+    "cardrole_name": "neutral"
+  },
+  {
+    "cardrole_name": "loose"
+  }
+]
