@@ -1,11 +1,26 @@
 [
   {
-    "cardrole_name": "agent"
+    "cardrole_id": 1,
+    "cardrole_name": "team 1"
   },
   {
+    "cardrole_id": 2,
+    "cardrole_name": "team 2"
+  },
+  {
+    "cardrole_id": 3,
+    "cardrole_name": "team 3"
+  },
+  {
+    "cardrole_id": 4,
+    "cardrole_name": "team 4"
+  },
+  {
+    "cardrole_id": 5,
     "cardrole_name": "neutral"
   },
   {
-    "cardrole_name": "loose"
+    "cardrole_id": 6,
+    "cardrole_name": "black"
   }
 ]

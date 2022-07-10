@@ -20,6 +20,7 @@ class GameSession(database.Model):
     active = database.Column(database.Boolean)
     admin = database.Column(database.Boolean)
 
+    role = relationship("Role", back_populates="game_sessions")
     game = relationship("Game", back_populates="user_sessions")
     user_session = relationship("UserSession", back_populates="game_sessions")
 
@@ -38,13 +39,14 @@ class Game(database.Model):
     started = database.Column(database.Boolean)
     settings = database.Column(MutableDict.as_mutable(JSONB))
 
+    gameset = relationship("GameSet", back_populates="game", uselist=False)
     user_sessions = relationship("GameSession", back_populates="game", lazy="dynamic")
 
     def __init__(self, room_code):
         self.room_code = room_code
         self.active = True
         self.started = False
-        self.settings = {"board_size": 64, "random": False}
+        self.settings = {"board_size": 64, "random": False, "lang": "en"}
 
     def __repr__(self):
         return f'GAME<game_id:{self.game_id}, room_code:{self.room_code}>'
@@ -75,7 +77,7 @@ class Role(database.Model):
     role_id = database.Column(database.Integer, primary_key=True)
     role_name = database.Column(database.String())
 
-    game_sessions = relationship("GameSession")
+    game_sessions = relationship("GameSession", back_populates="role")
 
     def __init__(self, role_name):
         self.role_name = role_name
@@ -92,7 +94,7 @@ class BankWord(database.Model):
     wordbank_id = database.Column(database.ForeignKey("WORD_BANK.wordbank_id"), primary_key=True)
     word_id = database.Column(database.ForeignKey("WORD.word_id"), primary_key=True)
 
-    wordbank = relationship("Wordbank", back_populates="words")
+    wordbank = relationship("WordBank", back_populates="words")
     word = relationship("Word", back_populates="wordbanks")
 
     def __repr__(self):
@@ -106,10 +108,11 @@ class GameWord(database.Model):
 
     gameset_id = database.Column(database.ForeignKey("GAME_SET.gameset_id"), primary_key=True)
     word_id = database.Column(database.ForeignKey("WORD.word_id"), primary_key=True)
-    card_status = database.Column(database.Integer)
+    card_position = database.Column(database.Integer)
+    turned_over = database.Column(database.Boolean)
     cardrole_id = database.Column(database.ForeignKey("CARD_ROLE.cardrole_id"))
 
-    gameset = relationship("Gameset", back_populates="words")
+    gameset = relationship("GameSet", back_populates="words")
     word = relationship("Word", back_populates="gamesets")
 
     def __repr__(self):
@@ -121,7 +124,7 @@ class Word(database.Model):
 
     __tablename__ = 'WORD'
 
-    word_id = database.Column(database.Interval, primary_key=True)
+    word_id = database.Column(database.Integer, primary_key=True)
     word_content = database.Column(database.String())
 
     gamesets = relationship("GameWord", back_populates="word")
@@ -131,7 +134,7 @@ class Word(database.Model):
         return f'WORD<word_id:{self.word_id}, word_content:{self.word_content}>'
 
 
-class Wordbank(database.Model):
+class WordBank(database.Model):
     """Class for database table WORD_BANK"""
 
     __tablename__ = 'WORD_BANK'
@@ -139,23 +142,26 @@ class Wordbank(database.Model):
     wordbank_id = database.Column(database.Integer, primary_key=True)
     wordbank_name = database.Column(database.String())
     description = database.Column(database.String())
+    language = database.Column(database.String())
 
-    words = relationship("BankWord", back_populates="wordbank")
-    gamesets = relationship("Gameset")
+    words = relationship("BankWord", back_populates="wordbank", lazy="dynamic")
+    gamesets = relationship("GameSet")
 
     def __repr__(self):
         return f'WORD_BANK<wordbank_id:{self.wordbank_id}, wordbank_name:{self.wordbank_name}>'
 
 
-class Gameset(database.Model):
+class GameSet(database.Model):
     """Class for database table GAME_SET"""
 
     __tablename__ = 'GAME_SET'
 
     gameset_id = database.Column(database.Integer, primary_key=True)
     wordbank_id = database.Column(database.ForeignKey("WORD_BANK.wordbank_id"))
+    game_id = database.Column(database.ForeignKey("GAME.game_id"))
 
-    words = relationship("GameWord", back_populates="gameset")
+    game = relationship("Game", back_populates="gameset")
+    words = relationship("GameWord", back_populates="gameset", lazy="dynamic")
 
     def __repr__(self):
         return f'GAME_SET<gameset_id:{self.gameset_id}, wordbank_id:{self.wordbank_id}>'
