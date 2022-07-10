@@ -12,34 +12,15 @@ const getStyle = {
 	6: 'border-color: white !important; background-color: black; color: white' // balck card
 }
 
-// dummy data
-const words = [
-	{ "id": 0, "text": "ROULETTE", "team": 0 },
-	{ "id": 1, "text": "DRACHE", "team": 1 },
-	{ "id": 2, "text": "KRIEG", "team": 2 },
-	{ "id": 3, "text": "HONIG", "team": 3 },
-	{ "id": 4, "text": "BOMBE", "team": 4 },
-	{ "id": 5, "text": "KASINO", "team": 6 },
-	{ "id": 6, "text": "WOLKENKRATZER", "team": 0 },
-	{ "id": 7, "text": "SATURN", "team": 1 },
-	{ "id": 8, "text": "ALIEN", "team": 2 },
-	{ "id": 9, "text": "PEITSCHE", "team": 3 },
-	{ "id": 10, "text": "ANTARKTIS", "team": 0 },
-	{ "id": 11, "text": "SCHNEEMANN", "team": 4 },
-	{ "id": 12, "text": "KONZERT", "team": 0 },
-	{ "id": 13, "text": "SCHOKOLADE", "team": 1 },
-	{ "id": 14, "text": "JET", "team": 0 },
-	{ "id": 15, "text": "DINOSAURIER", "team": 2 },
-	{ "id": 16, "text": "PIRAT", "team": 0 },
-	{ "id": 17, "text": "HUPE", "team": 3 },
-	{ "id": 18, "text": "PINGUIN", "team": 4 },
-	{ "id": 19, "text": "SPINNE", "team": 0 },
-];
-// 
-
 // show Bootstrap Toast to communicate with user
 const showToast = (title, message, time) => {
-	//console.log(`${title}: ${message} ${time}`);
+	console.log(`${title}: ${message} ${time}`);
+}
+
+// send settings to server
+const sendSettings = (size, lang) => {
+	// send 'set setting' event with board_size and game language to server
+	socket.emit('set setting', { 'board_size': { 'x': parseInt(size[0], 10), 'y': parseInt(size[1], 10) }, lang });
 }
 
 // called when settings change
@@ -53,28 +34,21 @@ const changedSettings = () => {
 	sendSettings(size, lang);
 }
 
-// send settings to server
-const sendSettings = (size, lang) => {
-	// send 'set setting' event with board_size and game language to server
-	socket.emit('set setting', { 'board_size': { 'x': parseInt(size[0]), 'y': parseInt(size[1]) }, 'lang': lang }, (response) => {
-	});
-}
-
 // called when a user wants to join a team with role
 const joinTeam = (e) => {
 
 	const btn = e.srcElement;
 	const data = btn.previousElementSibling.id; // z.B. idSpymaster2
-	const team = parseInt(data.slice(-1));
+	const team = parseInt(data.slice(-1), 10);
 	const role = data.slice(2, -1);
 
 	// to be deleted
-	btn.previousSibling.nodeValue = localStorage.getItem('username');
-	btn.classList.add('visually-hidden');
+	// btn.previousSibling.nodeValue = localStorage.getItem('username');
+	// btn.classList.add('visually-hidden');
 	//
 
 	// send 'set team' event with team and role to server
-	socket.emit('set team', { 'team': team, role: role }, (response) => {
+	socket.emit('set team', { team, role }, (response) => {
 		if (response) {
 			btn.previousSibling.nodeValue = localStorage.getItem('username');
 			btn.classList.add('visually-hidden');
@@ -86,13 +60,12 @@ const joinTeam = (e) => {
 const startGame = () => {
 
 	// send 'start game' event so server
-	socket.emit('start game', (response) => {
-	});
+	socket.emit('start game');
 
 	// to be deleted
-	const size = document.getElementById("idSizeSelect").value.split('x');
-	document.getElementById("idGameSettings").remove();
-	createBoard(size[0], size[1]);
+	//const size = document.getElementById("idSizeSelect").value.split('x');
+	//document.getElementById("idGameSettings").remove();
+	//createBoard(size[0], size[1]);
 	//
 }
 
@@ -142,36 +115,28 @@ const setUsername = () => {
 		if (socket.connected) {
 
 			// send 'set username' event with username to server
-			socket.emit('set username', { 'username': localStorage.getItem('username') }, (response) => {
-			});
+			socket.emit('set username', { 'username': localStorage.getItem('username') });
 		}
 	}
 }
 
-const showPlayers = (data) => {
-
-	//dummy data
-	const players = [
-		{ "name": "julian", "role": "Operative", "team": 1 },
-		{ "name": "3 backflip", "role": "Spymaster", "team": 2 }
-	];
-	//
+const showPlayers = (players) => {
 
 	// for each button to join a team
 	document.querySelectorAll("#idButtonTeam").forEach(btn => {
 
 		const data = btn.previousElementSibling.id; // z.B. idSpymaster2
-		const team = parseInt(data.slice(-1));
+		const team = parseInt(data.slice(-1), 10);
 		const role = data.slice(2, -1);
 
 		// find entry for this player in players
-		const player = players.filter(player => (player.role == role && player.team == team));
+		const player = players.filter(element => (element.role === role && element.team === team));
 
 		// if entry exists show player else show button
-		if(player.length == 1){
+		if (player.length === 1) {
 			btn.previousSibling.nodeValue = player[0].name;
 			btn.classList.add('visually-hidden');
-		}else{
+		} else {
 			btn.previousSibling.nodeValue = '';
 			btn.classList.remove('visually-hidden');
 		}
@@ -182,11 +147,11 @@ const showPlayers = (data) => {
 const updateBoard = (words) => {
 
 	words.forEach(word => {
-		btn = document.getElementById(word.id);
+		const btn = document.getElementById(word.id);
 		// set style for word card
-		if(word.team) btn.setAttribute('style', `color: inherit; ${getStyle[word.team]}`);
+		if (word.team) btn.setAttribute('style', `color: inherit; ${getStyle[word.team]}`);
 		// set text
-		if(word.text) btn.childNodes[0].nodeValue = word.text;
+		if (word.text) btn.childNodes[0].nodeValue = word.text;
 	});
 }
 
@@ -207,7 +172,6 @@ const createBoard = (columns, rows) => {
 		}
 		gameBoard.appendChild(div);
 	}
-	updateBoard(words);
 }
 
 window.onload = () => {
@@ -228,10 +192,10 @@ window.onload = () => {
 
 	socket.on('disconnect', () => {
 		//console.log('disconnected');
-	})
+	});
 
-	socket.on('server message', data => {
-		//console.log(data);
+	socket.on('show toast', (data) => {
+		showToast(data.title, data.message, data.time);
 	});
 
 	socket.on('show settings', settings => {
@@ -239,11 +203,11 @@ window.onload = () => {
 		document.getElementById("idGameLanguageSelect").value = settings.lang;
 	});
 
-	socket.on('show players', data => {
-		showPlayers(data);
+	socket.on('show players', players => {
+		showPlayers(players);
 	});
 
-	socket.on('start game', data => {
+	socket.on('start game', () => {
 		document.getElementById("idGameSettings").remove();
 		createBoard(8, 8);
 	});
@@ -253,18 +217,18 @@ window.onload = () => {
 	});
 
 	socket.on('show spymaster hint', data => {
-		//console.log(data); //tbd
+		console.log(data); //tbd
 	});
 
 	socket.on('perform operative action', data => {
-		//console.log(data); //tbd
+		console.log(data); //tbd
 	});
 
-	socket.on('perform spymaster action', data => {
+	socket.on('perform spymaster action', () => {
 		document.getElementById("idClueBtn").classList.remove('visually-hidden');
 	});
 
 	socket.on('end game', data => {
-		//console.log(data); //tbd
+		console.log(data); //tbd
 	});
 }
