@@ -1,8 +1,8 @@
 #idHowtoPlayButton:hover {
-  color: gray !important;
+	color: gray !important;
 }
 
 .myborder {
-  border-color:inherit !important;
-  border-style:dashed !important;
+	border-style: dashed !important;
+	border-width: thin !important;
 }

@@ -13,19 +13,19 @@
 	<div class="d-flex flex-row flex-grow-1 h-100">
 
 		<div class="d-flex flex-column w-100 align-self-center mx-3">
-			<div class="d-flex flex-column h-50 border border-primary rounded p-3 mb-3">
+			<div id="idTeam1" class="d-flex flex-column h-50 border border-primary rounded p-3 mb-3">
 				<h5 class="text-center mt-2">Team 1</h6>
-					<h6 class="mt-3">Spymaster</h6>
-					3 Backflip
-					<h6 class="mt-3">Operative</h6>
-					Kevin
+					<h6 id="idSpymaster0" class="mt-3">Spymaster</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-primary fw-bold">Join</a>
+					<h6 id="idOperative0" class="mt-3">Operative</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-primary fw-bold">Join</a>
 			</div>
-			<div class="d-flex flex-column h-50 border border-danger rounded p-3 mt-3">
+			<div id="idTeam2" class="d-flex flex-column h-50 border border-danger rounded p-3 mt-3">
 				<h5 class="text-center mt-2">Team 2</h6>
-					<h6 class="mt-3">Spymaster</h6>
-					Tobus
-					<h6 class="mt-3">Operative</h6>
-					<a class="btn btn-sm btn-danger fw-bold">Join</a>
+					<h6 id="idSpymaster1" class="mt-3">Spymaster</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-danger fw-bold">Join</a>
+					<h6 id="idOperative1" class="mt-3">Operative</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-danger fw-bold">Join</a>
 			</div>
 		</div>
 
@@ -36,17 +36,20 @@
 				<h1 class="text-center my-3">Game Settings</h1>
 				<div class="form-floating mb-2 text-dark w-75">
 					<select id="idSizeSelect" class="form-select">
-						<option selected value="5">5x5</option>
-						<option value="6">6x6</option>
-						<option value="7">7x7</option>
-						<option value="8">8x8</option>
+						<option value="5x5">5x5</option>
+						<option value="5x6">5x6</option>
+						<option value="6x6">6x6</option>
+						<option value="6x7">6x7</option>
+						<option selected value="7x7">7x7</option>
+						<option value="7x8">7x8</option>
+						<option value="8x8">8x8</option>
 					</select>
 					<label for="idSizeSelect">Select game size</label>
 				</div>
 				<div class="form-floating mt-2 text-dark w-75">
-					<select id="idLanguageSelect" class="form-select">
-						<option selected value="en">English</option>
-						<option value="de">Deutsch</option>
+					<select id="idGameLanguageSelect" class="form-select">
+						<option value="en">English</option>
+						<option selected value="de">Deutsch</option>
 					</select>
 					<label for="idSizeSelect">Select game language</label>
 				</div>
@@ -56,19 +59,49 @@
 		</div>
 
 		<div class="d-flex flex-column w-100 align-self-center mx-3">
-			<div class="d-flex flex-column h-50 border border-success rounded p-3 mb-3">
+			<div id="idTeam3" class="d-flex flex-column h-50 border border-success rounded p-3 mb-3">
 				<h5 class="text-center mt-2">Team 3</h6>
-					<h6 class="mt-3">Spymaster</h6>
-					<a class="btn btn-sm btn-success fw-bold">Join</a>
-					<h6 class="mt-3">Operative</h6>
-					Lukas
+					<h6 id="idSpymaster2" class="mt-3">Spymaster</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-success fw-bold">Join</a>
+					<h6 id="idOperative2" class="mt-3">Operative</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-success fw-bold">Join</a>
 			</div>
-			<div class="d-flex flex-column h-50 border border-warning rounded p-3 mt-3">
+			<div id="idTeam4" class="d-flex flex-column h-50 border border-warning rounded p-3 mt-3">
 				<h5 class="text-center mt-2">Team 4</h6>
-					<h6 class="mt-3">Spymaster</h6>
-					<a class="btn btn-sm btn-warning fw-bold text-white">Join</a>
-					<h6 class="mt-3">Operative</h6>
-					<a class="btn btn-sm btn-warning fw-bold text-white">Join</a>
+					<h6 id="idSpymaster3" class="mt-3">Spymaster</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-warning fw-bold text-white">Join</a>
+					<h6 id="idSpymaster3" class="mt-3">Operative</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-warning fw-bold text-white">Join</a>
+			</div>
+
+			<a id="idClueBtn" class="btn btn-outline-primary mt-3" data-bs-toggle="modal"
+			   data-bs-target="#idClueModal">Enter clue</a>
+			<div id="idClueModal" class="modal fade text-dark" tabindex="-1" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content rounded-4 shadow">
+						<div class="modal-header p-5 pb-4 border-bottom-0">
+							<h2 class="fw-bold mb-0 text-dark">Give your clue</h2>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
+						</div>
+						<div class="modal-body p-5 pt-0">
+							<form id="idClueForm" action="javascript:void(0)">
+								<div class="form-floating mb-3">
+									<input id="idClueInput" type="text" class="form-control rounded-3"
+										   placeholder="Clue" required="required" autocomplete="off">
+									<label for="floatingInput">Enter one word</label>
+								</div>
+								<div class="form-floating mb-3">
+									<input id="idClueNumberInput" type="number" class="form-control rounded-3"
+										   placeholder="Username" required="required" autocomplete="off">
+									<label for="floatingInput">Enter number of cards</label>
+								</div>
+								<button id="idSendClueBtn" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
+										type="submit" data-bs-dismiss="modal">Send</button>
+							</form>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
