@@ -83,6 +83,12 @@ const performSpymasterAction = () => {
 	//
 }
 
+const performOperativeAction = (e) => {
+	e.preventDefault();
+	console.log(e.srcElement.id);
+	socket.emit('performed operative action', {'id': e.srcElement.id });
+}
+
 // add EventListener when DOM ist loaded
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -158,6 +164,7 @@ const createBoard = (columns, rows) => {
 			newWord.setAttribute('style', 'color: inherit; border-color: white !important');
 			newWord.appendChild(document.createTextNode(''));
 			newWord.addEventListener('click', wordPressed);
+			newWord.addEventListener('contextmenu', performOperativeAction);
 			div.appendChild(newWord);
 		}
 		gameBoard.appendChild(div);
