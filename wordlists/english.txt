@@ -1,4 +1,3 @@
-word_content
 AFRICA
 AGENT
 AIR
