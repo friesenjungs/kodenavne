@@ -42,18 +42,8 @@ const joinTeam = (e) => {
 	const team = parseInt(data.slice(-1), 10);
 	const role = data.slice(2, -1);
 
-	// to be deleted
-	// btn.previousSibling.nodeValue = localStorage.getItem('username');
-	// btn.classList.add('visually-hidden');
-	//
-
 	// send 'set team' event with team and role to server
-	socket.emit('set team', { team, role }, (response) => {
-		if (response) {
-			btn.previousSibling.nodeValue = localStorage.getItem('username');
-			btn.classList.add('visually-hidden');
-		}
-	});
+	socket.emit('set team', { team, role });
 }
 
 // called when admin starts the game
