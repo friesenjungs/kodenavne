@@ -13,14 +13,20 @@ const getStyle = {
 }
 
 // show Bootstrap Toast to communicate with user
-const showToast = (title, message, icon, time) => {
-	console.log(`${title}: ${message} ${time}`);
-	const toast = document.getElementById('idToast');
-	if (title) document.getElementById("idToastHeader").childNodes[0].nodeValue = title;
-	if (message) document.getElementById("idToastMessage").childNodes[0].nodeValue = message;
-	if (time) document.getElementById("idToastTime").childNodes[0].nodeValue = time;
-	if (icon) document.getElementById("idToastIcon").classList.add(icon);
-	const newToast = new bootstrap.Toast(toast);
+const showToast = (title, message, icon, subtitle) => {
+	console.log(`${title}: ${message} ${subtitle}`);
+	const toast =
+	`<div id="idToast" class="toast bg-light" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="toast-header">
+			<i id="idToastIcon" class="bi ${icon} me-2"></i>
+			<strong id="idToastHeader" class="me-auto">${title}</strong>
+			<small id="idToastTime">${subtitle}</small>
+			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div id="idToastMessage" class="toast-body">${message}</div>
+	</div>`
+	document.getElementById("idToastContainer").insertAdjacentHTML('beforeend', toast);
+	const newToast = new bootstrap.Toast(document.getElementById("idToastContainer").lastElementChild);
 	newToast.show();
 }
 
@@ -44,7 +50,7 @@ const changedSettings = () => {
 // called when a user wants to join a team with role
 const joinTeam = (e) => {
 
-	const btn = e.srcElement;
+	const btn = e.target;
 	const data = btn.previousElementSibling.id; // z.B. idSpymaster2
 	const team = parseInt(data.slice(-1), 10);
 	const role = data.slice(2, -1);
@@ -68,7 +74,7 @@ const startGame = () => {
 
 // called when user clicks a word
 const wordPressed = (e) => {
-	e.srcElement.classList.toggle('border');// border-style toogles between solid and dashed
+	e.target.classList.toggle('border');// border-style toogles between solid and dashed
 }
 
 // called when Spymaster sends clue
@@ -92,7 +98,7 @@ const performSpymasterAction = () => {
 
 const performOperativeAction = (e) => {
 	e.preventDefault();
-	socket.emit('performed operative action', { 'id': e.srcElement.id });
+	socket.emit('performed operative action', { 'id': e.target.id });
 }
 
 // add EventListener when DOM ist loaded
