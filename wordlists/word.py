@@ -1,10 +1,9 @@
 import json
-from os import path
 
-jsonWord = 'wordlists\Word.json'
-jsonBankWord = 'wordlists\BankWord.json'
-txtfileEng = 'wordlists\english.txt'
-txtfileGer = 'wordlists\deutsch.txt'
+jsonWord = 'wordlists\\Word.json'
+jsonBankWord = 'wordlists\\BankWord.json'
+txtfileEng = 'wordlists\\english.txt'
+txtfileGer = 'wordlists\\deutsch.txt'
 listEng = []
 listGer = []
 count = 1
