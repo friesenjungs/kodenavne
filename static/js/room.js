@@ -3,13 +3,13 @@ let socket;
 
 // styling for word cards
 const getStyle = {
-	0: 'border-color: inherit !important', // unknown
-	1: 'border-color: blue !important',	// team 1
-	2: 'border-color: red !important', // team 2
-	3: 'border-color: green !important', // team 3
-	4: 'border-color: yellow !important', // team 4
-	5: 'border-color: inherit !important', // neutral card
-	6: 'border-color: white !important; background-color: black; color: white' // balck card
+	0: 'background-color: inherit; border-color: inherit !important; border-width: medium !important; color: inherit !important', // unknown
+	1: 'background-color: #0d6efd !important; border-color: black !important; border-width: medium !important; color: white',	// team 1
+	2: 'background-color: #dc3545; border-color: inherit !important; border-width: medium !important; color: white', // team 2
+	3: 'background-color: #198754; border-color: inherit !important; border-width: medium !important; color: white', // team 3
+	4: 'background-color: #ffc107; border-color: inherit !important; border-width: medium !important; color: white', // team 4
+	5: 'background-color: white; border-color: inherit !important; border-width: medium !important; color: black', // neutral card
+	6: 'background-color: black; border-color: white !important; border-width: medium !important; color: white' // balck card
 }
 
 // show Bootstrap Toast to communicate with user
@@ -151,7 +151,7 @@ const updateBoard = (words) => {
 	words.forEach(word => {
 		const btn = document.getElementById(word.id);
 		// set style for word card
-		if (word.team) btn.setAttribute('style', `color: inherit; ${getStyle[word.team]}`);
+		if (word.team != undefined) btn.setAttribute('style', `${getStyle[word.team]}`);
 		// set text
 		if (word.text) btn.childNodes[0].nodeValue = word.text;
 	});
@@ -166,8 +166,8 @@ const createBoard = (columns, rows) => {
 		for (let j = 0; j < columns; j++) {
 			const newWord = document.createElement("a");
 			newWord.setAttribute('id', `${i * rows + j}`)
-			newWord.setAttribute('class', 'd-flex btn border border-2 myborder w-100 fw-bold m-1 align-items-center justify-content-center text-break');
-			newWord.setAttribute('style', 'color: inherit; border-color: white !important');
+			newWord.setAttribute('class', 'd-flex btn border myborder w-100 fw-bold m-1 align-items-center justify-content-center text-break');
+			newWord.setAttribute('style', 'color: inherit;');
 			newWord.appendChild(document.createTextNode(''));
 			newWord.addEventListener('click', wordPressed);
 			newWord.addEventListener('contextmenu', performOperativeAction);
