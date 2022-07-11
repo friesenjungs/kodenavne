@@ -19,7 +19,7 @@ const showToast = (title, message, icon, time) => {
 	if (title) document.getElementById("idToastHeader").childNodes[0].nodeValue = title;
 	if (message) document.getElementById("idToastMessage").childNodes[0].nodeValue = message;
 	if (time) document.getElementById("idToastTime").childNodes[0].nodeValue = time;
-	if (icon) document.getElementById("idToastIcon").classList.add(`bi-${icon}`);
+	if (icon) document.getElementById("idToastIcon").classList.add(icon);
 	const newToast = new bootstrap.Toast(toast);
 	newToast.show();
 }

@@ -38,6 +38,7 @@ class Game(database.Model):
     active = database.Column(database.Boolean)
     started = database.Column(database.Boolean)
     settings = database.Column(MutableDict.as_mutable(JSONB))
+    current_team = database.Column(database.Integer)
 
     gameset = relationship("GameSet", back_populates="game", uselist=False)
     user_sessions = relationship("GameSession", back_populates="game", lazy="dynamic")
@@ -46,7 +47,7 @@ class Game(database.Model):
         self.room_code = room_code
         self.active = True
         self.started = False
-        self.settings = {"board_size": 64, "random": False, "lang": "en"}
+        self.settings = {"board_size": {"x": 5, "y": 5}, "random": False, "lang": "en"}
 
     def __repr__(self):
         return f'GAME<game_id:{self.game_id}, room_code:{self.room_code}>'
@@ -141,8 +142,8 @@ class WordBank(database.Model):
 
     wordbank_id = database.Column(database.Integer, primary_key=True)
     wordbank_name = database.Column(database.String())
+    lang = database.Column(database.String())
     description = database.Column(database.String())
-    language = database.Column(database.String())
 
     words = relationship("BankWord", back_populates="wordbank", lazy="dynamic")
     gamesets = relationship("GameSet")
