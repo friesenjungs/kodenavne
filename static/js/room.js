@@ -210,9 +210,9 @@ window.onload = () => {
 		showPlayers(players);
 	});
 
-	socket.on('start game', () => {
+	socket.on('start game', (data) => {
 		document.getElementById("idGameSettings").remove();
-		createBoard(8, 8);
+		createBoard(data.board_size.x, data.board_size.y);
 	});
 
 	socket.on('show cards', data => {
