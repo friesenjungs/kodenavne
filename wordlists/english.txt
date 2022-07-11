@@ -1,4 +1,3 @@
-word_content
 people
 history
 way
