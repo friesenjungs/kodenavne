@@ -38,7 +38,10 @@ class Game(database.Model):
     active = database.Column(database.Boolean)
     started = database.Column(database.Boolean)
     settings = database.Column(MutableDict.as_mutable(JSONB))
+    teams = database.Column(MutableDict.as_mutable(JSONB))
     current_team = database.Column(database.Integer)
+    current_team_role = database.Column(database.ForeignKey("ROLE.role_id"))
+    current_hint_amount = database.Column(database.Integer)
 
     gameset = relationship("GameSet", back_populates="game", uselist=False)
     user_sessions = relationship("GameSession", back_populates="game", lazy="dynamic")
