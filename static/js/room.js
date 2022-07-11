@@ -13,8 +13,15 @@ const getStyle = {
 }
 
 // show Bootstrap Toast to communicate with user
-const showToast = (title, message, time) => {
+const showToast = (title, message, icon, time) => {
 	console.log(`${title}: ${message} ${time}`);
+	const toast = document.getElementById('idToast');
+	if (title) document.getElementById("idToastHeader").childNodes[0].nodeValue = title;
+	if (message) document.getElementById("idToastMessage").childNodes[0].nodeValue = message;
+	if (time) document.getElementById("idToastTime").childNodes[0].nodeValue = time;
+	if (icon) document.getElementById("idToastIcon").classList.add(`bi-${icon}`);
+	const newToast = new bootstrap.Toast(toast);
+	newToast.show();
 }
 
 // send settings to server
@@ -85,8 +92,7 @@ const performSpymasterAction = () => {
 
 const performOperativeAction = (e) => {
 	e.preventDefault();
-	console.log(e.srcElement.id);
-	socket.emit('performed operative action', {'id': e.srcElement.id });
+	socket.emit('performed operative action', { 'id': e.srcElement.id });
 }
 
 // add EventListener when DOM ist loaded
@@ -192,7 +198,7 @@ window.onload = () => {
 	});
 
 	socket.on('show toast', (data) => {
-		showToast(data.title, data.message, data.time);
+		showToast(data.title, data.message, data.icon, data.time);
 	});
 
 	socket.on('show settings', settings => {
