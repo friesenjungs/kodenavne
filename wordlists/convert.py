@@ -1,5 +1,4 @@
 import jpype
-import asposecells
 jpype.startJVM()
 from asposecells.api import Workbook
 workbook = Workbook("wordlists/deutschKurz.txt")
