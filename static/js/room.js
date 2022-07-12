@@ -308,7 +308,7 @@ const createBoard = (columns, rows) => {
 		for (let j = 0; j < columns; j++) {
 			const newWord = document.createElement("a");
 			newWord.setAttribute('id', `${i * columns + j}`)
-			newWord.setAttribute('class', 'd-flex btn border myborder w-100 fw-bold m-1 align-items-center justify-content-center text-break');
+			newWord.setAttribute('class', 'd-flex btn border dashedborder w-100 fw-bold m-1 align-items-center justify-content-center text-break');
 			//newWord.setAttribute('style', 'color: inherit;');
 			newWord.appendChild(document.createTextNode(''));
 			newWord.addEventListener('click', wordPressed);
