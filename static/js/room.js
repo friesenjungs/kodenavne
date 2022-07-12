@@ -1,7 +1,7 @@
 const namespace = '/';
 let socket;
 
-const icons =  {
+const icons = {
 	'info': 'bi-info-square-fill',
 	'warning': 'bi-exclamation-octagon-fill',
 	'error': 'bi-x-octagon-fill'
@@ -99,7 +99,7 @@ const performOperativeAction = (e) => {
 
 	// send 'performed operative action' event with id of word card so server
 	socket.emit('performed operative action', { 'id': e.target.id }, (successfull, endturn) => {
-		if(endturn){
+		if (endturn) {
 			document.getElementById("idEndTurnBtn").classList.add('visually-hidden');
 		}
 	});
@@ -138,7 +138,7 @@ const setUsername = () => {
 
 		// send 'set username' event with username to server
 		socket.emit('set username', { 'username': localStorage.getItem('username') }, (response) => {
-			if(!response) showToast('Error', 'Could not set username', icons['warning'], 'now');
+			if (!response) showToast('Error', 'Could not set username', icons['warning'], 'now');
 		});
 	}
 }
@@ -258,6 +258,10 @@ window.onload = () => {
 	});
 
 	socket.on('end game', data => {
-		console.log(data);
+		if (data.winner_team) {
+			document.getElementById("idGameStatusMessage").firstChild.nodeValue = `Team ${data.winner_team} won the game!`;
+		} else if (data.looser_team) {
+			document.getElementById("idGameStatusMessage").firstChild.nodeValue = `Team ${data.winner_team} lost the game!`;
+		}
 	});
 }
