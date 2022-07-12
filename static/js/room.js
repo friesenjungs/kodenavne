@@ -82,7 +82,7 @@ const performSpymasterAction = () => {
 
 	// get clue and cluenumber
 	const clue = document.getElementById("idClueInput").value;
-	const cluenumber = document.getElementById("idClueNumberInput").value;
+	const cluenumber = parseInt(document.getElementById("idClueNumberInput").value);
 
 	// send 'performed spymaster action' event with clue and cluenumber to server
 	socket.emit('performed spymaster action', { 'hint': clue, 'amount': cluenumber }, (response) => {
