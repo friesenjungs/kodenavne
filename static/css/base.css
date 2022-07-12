@@ -1,18 +1,4 @@
-#howtoplay {
-  border: none;
-  background-color: transparent;
-  outline: none;
+#idHowtoPlayButton:hover {
+	color: gray !important;
 }
 
-#howtoplay:hover {
-  color: gray !important;
-  border: none;
-}
-
-.modal-title {
-  color: black;
-}
-
-.modal-body {
-  color: black;
-}

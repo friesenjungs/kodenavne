@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Room not found!{% endblock %}
+{% block title %}Room error!{% endblock %}
 {% block content %}
 
 <div class="d-flex mt-auto mb-auto">
     <div class="container text-center w-50" style="border-radius: 10px">
-        <h1 class="mb-3">Sorry, this Room does not exist!</h1>
+        <h1 class="mb-3">{{ errortext }}</h1>
         <form class="text-dark" action="/">
             <button id="idBackToHomeBtn" type="submit" class="btn btn-primary mb-3" >Back to Home!</button>
         </form>

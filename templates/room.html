@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Webeng Project{% endblock %}
+{% block link%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/room.css')}}">
+{% endblock %}
+{% block script%}
+<script src="{{url_for('static', filename='js/room.js')}}"></script>
+{% endblock %}
+{% block content %}
+
+<div id="tsparticles" class="d-flex w-100 h-100 m-0">
+
+	<div class="d-flex flex-row flex-grow-1 h-100">
+
+		<div class="d-flex flex-column w-100 align-self-center mx-3">
+			<div id="idTeam1" class="d-flex flex-column h-50 teamblue p-3 mb-3">
+				<h5 class="text-center mt-2">Team 1</h6>
+					<h6 id="idSpymaster1" class="mt-3">Spymaster</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-primary fw-bold">Join</a>
+					<h6 id="idOperative1" class="mt-3">Operative</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-primary fw-bold">Join</a>
+			</div>
+			<div id="idTeam2" class="d-flex flex-column h-50 p-3 mt-3 teamred">
+				<h5 class="text-center mt-2">Team 2</h6>
+					<h6 id="idSpymaster2" class="mt-3">Spymaster</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-danger fw-bold">Join</a>
+					<h6 id="idOperative2" class="mt-3">Operative</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-danger fw-bold">Join</a>
+			</div>
+		</div>
+
+		<div id="idGameBoard" class="d-flex flex-column align-self-center col-8 h-75">
+
+			<!--will be shown when game starts-->
+			<div id="idGameStatus" class="d-flex flex-row w-75 mb-3 mx-auto visually-hidden">
+				<div id="idGameStatusMessage"
+					 class="d-flex bg-white border border-dark flex-grow-1 rounded text-dark me-2 align-items-center p-1 justify-content-center fw-bold">
+					Game starting ...
+					<!--js inserting game status here-->
+				</div>
+				<a id="idClueBtn" class="btn btn-outline-primary ms-2 visually-hidden" data-bs-toggle="modal"
+				   data-bs-target="#idClueModal">Enter clue</a>
+				<a id="idEndTurnBtn" class="btn btn-outline-primary ms-2 visually-hidden">End turn</a>
+			</div>
+			<!---->
+
+			<!--JS inserting WordCards here-->
+			<!--will be deleted when game starts-->
+			<div id="idGameSettings" class="d-flex flex-column align-items-center justify-content-center h-100 w-100 rounded">
+				<h1 class="text-center my-3">Game Settings</h1>
+				<div class="form-floating mb-2 text-dark w-75">
+					<select id="idSizeSelect" class="form-select">
+						<option selected value="5x5">5x5</option>
+						<option value="5x6">5x6</option>
+						<option value="6x6">6x6</option>
+						<option value="6x7">6x7</option>
+						<option value="7x7">7x7</option>
+						<option value="7x8">7x8</option>
+						<option value="8x8">8x8</option>
+					</select>
+					<label for="idSizeSelect">Select game size</label>
+				</div>
+				<div class="form-floating mt-2 text-dark w-75">
+					<select id="idGameLanguageSelect" class="form-select">
+						<option value="en">English</option>
+						<option selected value="de">Deutsch</option>
+					</select>
+					<label for="idSizeSelect">Select game language</label>
+				</div>
+				<a id="idStartGameBtn" class="btn btn-primary mt-3 fw-bold">Start Game</a>
+			</div>
+			<!---->
+
+		</div>
+
+		<div class="d-flex flex-column w-100 align-self-center mx-3">
+			<div id="idTeam3" class="d-flex flex-column h-50 teamgreen p-3 mb-3">
+				<h5 class="text-center mt-2">Team 3</h6>
+					<h6 id="idSpymaster3" class="mt-3">Spymaster</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-success fw-bold">Join</a>
+					<h6 id="idOperative3" class="mt-3">Operative</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-success fw-bold">Join</a>
+			</div>
+			<div id="idTeam4" class="d-flex flex-column h-50 teamorange p-3 mt-3">
+				<h5 class="text-center mt-2">Team 4</h6>
+					<h6 id="idSpymaster4" class="mt-3">Spymaster</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-warning fw-bold text-white">Join</a>
+					<h6 id="idOperative4" class="mt-3">Operative</h6>
+					<a id="idButtonTeam" class="btn btn-sm btn-warning fw-bold text-white">Join</a>
+			</div>
+
+			<div id="idClueModal" class="modal fade text-dark" tabindex="-1" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content rounded-4 shadow">
+						<div class="modal-header p-5 pb-4 border-bottom-0">
+							<h2 class="fw-bold mb-0 text-dark">Give your clue</h2>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
+						</div>
+						<div class="modal-body p-5 pt-0">
+							<form id="idClueForm" action="javascript:void(0)">
+								<div class="form-floating mb-3">
+									<input id="idClueInput" type="text" class="form-control rounded-3"
+										   placeholder="Clue" required="required" autocomplete="off">
+									<label for="floatingInput">Enter one word</label>
+								</div>
+								<div class="form-floating mb-3">
+									<input id="idClueNumberInput" type="number" class="form-control rounded-3"
+										   placeholder="Username" required="required" autocomplete="off">
+									<label for="floatingInput">Enter number of cards</label>
+								</div>
+								<button id="idSendClueBtn" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
+										type="submit" data-bs-dismiss="modal">Send</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.1.3/tsparticles.bundle.min.js"></script>
+</div>
+
+{% endblock %}
