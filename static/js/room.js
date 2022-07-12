@@ -11,9 +11,9 @@ const icons = {
 const getStyle = {
 	0: 'background-color: inherit; border-color: inherit !important; border-width: medium !important; color: inherit !important', // unknown
 	1: 'background-color: #0d6efd !important; border-color: black !important; border-width: medium !important; color: white',	// team 1
-	2: 'background-color: #dc3545; border-color: inherit !important; border-width: medium !important; color: white', // team 2
-	3: 'background-color: #198754; border-color: inherit !important; border-width: medium !important; color: white', // team 3
-	4: 'background-color: #ffc107; border-color: inherit !important; border-width: medium !important; color: white', // team 4
+	2: 'background-color: #dc3545; border-color: black !important; border-width: medium !important; color: white', // team 2
+	3: 'background-color: #198754; border-color: black !important; border-width: medium !important; color: white', // team 3
+	4: 'background-color: #ffc107; border-color: black !important; border-width: medium !important; color: white', // team 4
 	5: 'background-color: white; border-color: inherit !important; border-width: medium !important; color: black', // neutral card
 	6: 'background-color: black; border-color: white !important; border-width: medium !important; color: white' // balck card
 }
@@ -258,10 +258,11 @@ window.onload = () => {
 	});
 
 	socket.on('end game', data => {
+		console.log();
 		if (data.winner_team) {
 			document.getElementById("idGameStatusMessage").firstChild.nodeValue = `Team ${data.winner_team} won the game!`;
 		} else if (data.looser_team) {
-			document.getElementById("idGameStatusMessage").firstChild.nodeValue = `Team ${data.winner_team} lost the game!`;
+			document.getElementById("idGameStatusMessage").firstChild.nodeValue = `Team ${data.looser_team} lost the game!`;
 		}
 	});
 }
