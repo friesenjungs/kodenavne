@@ -1,8 +1,8 @@
-FROM python:3.8-slim-buster
+FROM python:3.8-slim-buster as backend-base
 
-WORKDIR /flask-deploy
+LABEL org.opencontainers.image.source = "https://github.com/friesenjungs/kodenavne"
 
-COPY . .
+COPY requirements.txt .
 
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends python3-dev  \
@@ -13,6 +13,12 @@ RUN apt-get update -y \
 
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir wheel \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir -r ./requirements.txt
+
+FROM backend-base
+
+WORKDIR /flask-deploy
+
+COPY . .
 
 CMD ["bash", "./container-start-script.sh"]

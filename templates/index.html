@@ -7,5 +7,19 @@
 <script src="{{url_for('static', filename='js/index.js')}}"></script>
 {% endblock %}
 {% block content %}
-<h1>Hello World from project!</h1>
+
+<div class="d-flex mt-auto mb-auto">
+	<div class="text-center cover-container d-flex w-50 h-100 p-3 mx-auto flex-column">
+		<main class="px-3">
+			<h1>Kodenavne</h1>
+			<p class="lead">
+				Play your favorite browser game now in groups of up to 8 friends and be the first to guess all the words of your team.
+			</p>
+			<p class="lead">
+				<a href="/room/create" class="btn btn-lg btn-primary fw-bold">Create Room</a>
+			</p>
+		</main>
+	</div>
+</div>
+
 {% endblock %}

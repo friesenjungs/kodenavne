@@ -1,0 +1,32 @@
+.teamblue {
+	border-style: solid;
+	border-color: #0d6efd;
+	border-width: thin;
+	border-radius: 8px;
+}
+
+.teamred {
+	border-style: solid;
+	border-color: #dc3545;
+	border-width: thin;
+	border-radius: 8px;
+}
+
+.teamgreen {
+	border-style: solid;
+	border-color: #198754;
+	border-width: thin;
+	border-radius: 8px;
+}
+
+.teamorange {
+	border-style: solid;
+	border-color: #ffc107;
+	border-width: thin;
+	border-radius: 8px;
+}
+
+.dashedborder {
+	border-style: dashed !important;
+	border-width: medium !important;
+}

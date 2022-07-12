@@ -11,17 +11,20 @@ services:
       - db:/var/lib/postgresql/data
 
   backend:
-    build:
-      context: .
-    container_name: webeng-project-dhbw
+    build: .
+    image: kodenavne-dev
+    container_name: kodenavne-dev
     ports:
-      - "127.0.0.1:5001:5001"
+      - "127.0.0.1:5000:5000"
     restart: on-failure
     env_file:
       - .env
     tty: true
     volumes:
       - db_migrations:/flask-deploy/migrations
+      - ./static:/flask-deploy/static
+      - ./templates:/flask-deploy/templates
+      - ./app.py:/flask-deploy/app.py
     depends_on:
       - db
 
@@ -32,7 +35,7 @@ services:
     env_file:
       - .env
     ports:
-      - "127.0.0.1:5002:80"
+      - "127.0.0.1:5001:80"
     volumes:
       - pgadmin:/var/lib/pgadmin
 

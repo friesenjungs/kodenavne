@@ -1,0 +1,14 @@
+[
+  {
+    "wordbank_id": 1,
+    "wordbank_name": "base",
+    "lang": "en",
+    "description": "Base card-set for english language"
+  },
+  {
+    "wordbank_id": 2,
+    "wordbank_name": "base",
+    "lang": "de",
+    "description": "Basis Kartenset für die deutsche Sprache"
+  }
+]
