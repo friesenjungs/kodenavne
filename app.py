@@ -248,6 +248,12 @@ def game_room(room_code):
         return resp
 
 
+@app.route("/impressum")
+def impressum():
+    """impressum page"""
+    return render_template("impressum.html")
+
+
 @socketio.on('connect')
 def connect_socket():
     session_cookie = request.cookies.get("session")
