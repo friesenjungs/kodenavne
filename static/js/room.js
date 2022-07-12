@@ -110,7 +110,7 @@ const endTurn = () => {
 
 	// send performed operative action event to server
 	socket.emit('performed operative action', { 'id': -1 }, (response) => {
-		if (response) {
+		if (response.successfull) {
 			// hide end turn button
 			document.getElementById("idEndTurn").classList.add('visually-hidden');
 		}
@@ -254,10 +254,6 @@ window.onload = () => {
 		updateBoard(cards);
 	});
 
-	socket.on('show spymaster hint', data => {
-		document.getElementById("idGameStatusMessage").firstChild.nodeValue = data.hint;
-	});
-
 	socket.on('perform spymaster action', () => {
 		document.getElementById("idClueBtn").classList.remove('visually-hidden');
 		document.getElementById("idClueInput").value = "";
@@ -269,6 +265,6 @@ window.onload = () => {
 	});
 
 	socket.on('end game', data => {
-		console.log(data); //tbd
+		console.log(data);
 	});
 }
