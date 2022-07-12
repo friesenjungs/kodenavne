@@ -480,30 +480,29 @@ def performed_operative_action_socket(data):
         if data["id"] == -1:
             next_team_turn(game_instance)
             return True, True
-        elif word_to_turn is not None and game_instance.current_hint["amount"] != -1:
-            if not word_to_turn.turned_over:
-                word_to_turn.turned_over = True
-                emit("show cards", get_words_json(game_instance, "Operative"), room=f"{game_instance.room_code}/Operative")
-                emit("show cards", get_words_json(game_instance, "Spymaster"), room=f"{game_instance.room_code}/Spymaster")
-                if word_to_turn.cardrole_id == db.CardRole.query.filter_by(cardrole_name="black").first().cardrole_id:
+        elif word_to_turn is not None and game_instance.current_hint["amount"] != -1 and not word_to_turn.turned_over:
+            word_to_turn.turned_over = True
+            emit("show cards", get_words_json(game_instance, "Operative"), room=f"{game_instance.room_code}/Operative")
+            emit("show cards", get_words_json(game_instance, "Spymaster"), room=f"{game_instance.room_code}/Spymaster")
+            if word_to_turn.cardrole_id == db.CardRole.query.filter_by(cardrole_name="black").first().cardrole_id:
+                emit("show game status", {"message": "Game terminated"}, room=game_instance.room_code)
+                emit("end game", {"looser_team": game_session.team}, room=game_instance.room_code)
+                game_instance.current_team = word_to_turn.cardrole_id
+                game_instance.current_hint["amount"] = 0
+            all_remaining_cards = get_remaining_cards(game_session)
+            for key, value in all_remaining_cards.items():
+                if value == 0:
                     emit("show game status", {"message": "Game terminated"}, room=game_instance.room_code)
-                    emit("end game", {"looser_team": game_session.team}, room=game_instance.room_code)
+                    emit("end game", {"winner_team": key}, room=game_instance.room_code)
                     game_instance.current_team = word_to_turn.cardrole_id
                     game_instance.current_hint["amount"] = 0
-                all_remaining_cards = get_remaining_cards(game_session)
-                for key, value in all_remaining_cards.items():
-                    if value == 0:
-                        emit("show game status", {"message": "Game terminated"}, room=game_instance.room_code)
-                        emit("end game", {"winner_team": key}, room=game_instance.room_code)
-                        game_instance.current_team = word_to_turn.cardrole_id
-                        game_instance.current_hint["amount"] = 0
-                if word_to_turn.cardrole_id != game_instance.current_team or game_instance.current_hint["amount"] == 1:
-                    next_team_turn(game_instance)
-                    return True, True
-                else:
-                    game_instance.current_hint["amount"] = game_instance.current_hint["amount"] - 1
-                    db.database.session.commit()
-                return True, False
+            if word_to_turn.cardrole_id != game_instance.current_team or game_instance.current_hint["amount"] == 1:
+                next_team_turn(game_instance)
+                return True, True
+            else:
+                game_instance.current_hint["amount"] = game_instance.current_hint["amount"] - 1
+                db.database.session.commit()
+            return True, False
     else:
         print(f"Malformed operative action from {session_cookie}")
     return False, False
