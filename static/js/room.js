@@ -15,121 +15,121 @@ const getStyle = {
 	3: 'background-color: #198754; border-color: black !important; border-width: medium !important; color: white', // team 3
 	4: 'background-color: #ffc107; border-color: black !important; border-width: medium !important; color: white', // team 4
 	5: 'background-color: white; border-color: inherit !important; border-width: medium !important; color: black', // neutral card
-	6: 'background-color: black; border-color: white !important; border-width: medium !important; color: white' // balck card
+	6: 'background-color: black; border-color: white !important; border-width: medium !important; color: white' // black card
 }
 
 const particle = {
-	"emitters": {
-		"position": {
-			"x": 50,
-			"y": 100
+	'emitters': {
+		'position': {
+			'x': 50,
+			'y': 100
 		},
-		"rate": {
-			"quantity": 5,
-			"delay": 0.15
+		'rate': {
+			'quantity': 5,
+			'delay': 0.15
 		}
 	},
-	"particles": {
-		"color": {
-			"value": [
-				"#1E00FF",
-				"#FF0061",
-				"#E1FF00",
-				"#00FF9E"
+	'particles': {
+		'color': {
+			'value': [
+				'#1E00FF',
+				'#FF0061',
+				'#E1FF00',
+				'#00FF9E'
 			]
 		},
-		"move": {
-			"decay": 0.05,
-			"direction": "top",
-			"enable": true,
-			"gravity": {
-				"enable": true
+		'move': {
+			'decay': 0.05,
+			'direction': 'top',
+			'enable': true,
+			'gravity': {
+				'enable': true
 			},
-			"outModes": {
-				"top": "none",
-				"default": "destroy"
+			'outModes': {
+				'top': 'none',
+				'default': 'destroy'
 			},
-			"speed": {
-				"min": 75,
-				"max": 150
+			'speed': {
+				'min': 75,
+				'max': 150
 			}
 		},
-		"number": {
-			"value": 0
+		'number': {
+			'value': 0
 		},
-		"opacity": {
-			"value": 1
+		'opacity': {
+			'value': 1
 		},
-		"rotate": {
-			"value": {
-				"min": 0,
-				"max": 360
+		'rotate': {
+			'value': {
+				'min': 0,
+				'max': 360
 			},
-			"direction": "random",
-			"animation": {
-				"enable": true,
-				"speed": 30
+			'direction': 'random',
+			'animation': {
+				'enable': true,
+				'speed': 30
 			}
 		},
-		"tilt": {
-			"direction": "random",
-			"enable": true,
-			"value": {
-				"min": 0,
-				"max": 360
+		'tilt': {
+			'direction': 'random',
+			'enable': true,
+			'value': {
+				'min': 0,
+				'max': 360
 			},
-			"animation": {
-				"enable": true,
-				"speed": 30
+			'animation': {
+				'enable': true,
+				'speed': 30
 			}
 		},
-		"size": {
-			"value": 3,
-			"animation": {
-				"enable": true,
-				"startValue": "min",
-				"count": 1,
-				"speed": 16,
-				"sync": true
+		'size': {
+			'value': 3,
+			'animation': {
+				'enable': true,
+				'startValue': 'min',
+				'count': 1,
+				'speed': 16,
+				'sync': true
 			}
 		},
-		"roll": {
-			"darken": {
-				"enable": true,
-				"value": 25
+		'roll': {
+			'darken': {
+				'enable': true,
+				'value': 25
 			},
-			"enlighten": {
-				"enable": true,
-				"value": 25
+			'enlighten': {
+				'enable': true,
+				'value': 25
 			},
-			"enable": true,
-			"speed": {
-				"min": 5,
-				"max": 15
+			'enable': true,
+			'speed': {
+				'min': 5,
+				'max': 15
 			}
 		},
-		"wobble": {
-			"distance": 30,
-			"enable": true,
-			"speed": {
-				"min": -7,
-				"max": 7
+		'wobble': {
+			'distance': 30,
+			'enable': true,
+			'speed': {
+				'min': -7,
+				'max': 7
 			}
 		},
-		"shape": {
-			"type": [
-				"circle",
-				"square",
-				"triangle",
-				"polygon"
+		'shape': {
+			'type': [
+				'circle',
+				'square',
+				'triangle',
+				'polygon'
 			],
-			"options": {
-				"polygon": [
+			'options': {
+				'polygon': [
 					{
-						"sides": 5
+						'sides': 5
 					},
 					{
-						"sides": 6
+						'sides': 6
 					}
 				]
 			}
@@ -140,17 +140,17 @@ const particle = {
 // show Bootstrap Toast to communicate with user
 const showToast = (title, message, icon, subtitle) => {
 	const toast =
-		`<div id="idToast" class="toast bg-light" role="alert" aria-live="assertive" aria-atomic="true">
-		<div class="toast-header">
-			<i id="idToastIcon" class="bi ${icon} me-2"></i>
-			<strong id="idToastHeader" class="me-auto">${title}</strong>
-			<small id="idToastTime">${subtitle}</small>
-			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		`<div id='idToast' class='toast bg-light' role='alert' aria-live='assertive' aria-atomic='true'>
+		<div class='toast-header'>
+			<i id='idToastIcon' class='bi ${icon} me-2'></i>
+			<strong id='idToastHeader' class='me-auto'>${title}</strong>
+			<small id='idToastTime'>${subtitle}</small>
+			<button type='button' class='btn-close' data-bs-dismiss='toast' aria-label='Close'></button>
 		</div>
-		<div id="idToastMessage" class="toast-body">${message}</div>
+		<div id='idToastMessage' class='toast-body'>${message}</div>
 	</div>`
-	document.getElementById("idToastContainer").insertAdjacentHTML('beforeend', toast);
-	const newToast = new bootstrap.Toast(document.getElementById("idToastContainer").lastElementChild);
+	document.querySelector('#idToastContainer').insertAdjacentHTML('beforeend', toast);
+	const newToast = new bootstrap.Toast(document.querySelector('#idToastContainer').lastElementChild);
 	newToast.show();
 }
 
@@ -164,8 +164,8 @@ const sendSettings = (size, lang) => {
 const changedSettings = () => {
 
 	// get game size and game language
-	const size = document.getElementById("idSizeSelect").value.split('x');
-	const lang = document.getElementById("idGameLanguageSelect").value;
+	const size = document.querySelector('#idSizeSelect').value.split('x');
+	const lang = document.querySelector('#idGameLanguageSelect').value;
 
 	// send changes to server
 	sendSettings(size, lang);
@@ -199,13 +199,13 @@ const wordPressed = (e) => {
 const performSpymasterAction = () => {
 
 	// get clue and cluenumber
-	const clue = document.getElementById("idClueInput").value;
-	const cluenumber = parseInt(document.getElementById("idClueNumberInput").value, 10);
+	const clue = document.querySelector('#idClueInput').value;
+	const cluenumber = parseInt(document.querySelector('#idClueNumberInput').value, 10);
 
 	// send 'performed spymaster action' event with clue and cluenumber to server
 	socket.emit('performed spymaster action', { 'hint': clue, 'amount': cluenumber }, (response) => {
 		if (response) {
-			document.getElementById("idClueBtn").classList.add('visually-hidden');
+			document.querySelector('#idClueBtn').classList.add('visually-hidden');
 		}
 	});
 }
@@ -217,9 +217,9 @@ const performOperativeAction = (e) => {
 	e.preventDefault();
 
 	// send 'performed operative action' event with id of word card so server
-	socket.emit('performed operative action', { 'id': e.target.id }, (successfull, endturn) => {
+	socket.emit('performed operative action', { 'id': e.target.id.replace('idWord', '') }, (successfull, endturn) => {
 		if (endturn) {
-			document.getElementById("idEndTurnBtn").classList.add('visually-hidden');
+			document.querySelector('#idEndTurnBtn').classList.add('visually-hidden');
 		}
 	});
 }
@@ -231,7 +231,7 @@ const endTurn = () => {
 	socket.emit('performed operative action', { 'id': -1 }, (successfull, endturn) => {
 		if (endturn) {
 			// hide end turn button
-			document.getElementById("idEndTurnBtn").classList.add('visually-hidden');
+			document.querySelector('#idEndTurnBtn').classList.add('visually-hidden');
 		}
 	});
 }
@@ -239,14 +239,14 @@ const endTurn = () => {
 // add EventListener when DOM ist loaded
 document.addEventListener('DOMContentLoaded', () => {
 
-	document.getElementById("idSizeSelect").addEventListener('change', changedSettings);
-	document.getElementById("idGameLanguageSelect").addEventListener('change', changedSettings);
-	document.querySelectorAll("#idButtonTeam").forEach(btn => {
+	document.querySelector('#idSizeSelect').addEventListener('change', changedSettings);
+	document.querySelector('#idGameLanguageSelect').addEventListener('change', changedSettings);
+	document.querySelectorAll('#idButtonTeam').forEach(btn => {
 		btn.addEventListener('click', joinTeam);
 	});
-	document.getElementById("idStartGameBtn").addEventListener('click', startGame);
-	document.getElementById("idClueForm").addEventListener('submit', performSpymasterAction);
-	document.getElementById("idEndTurnBtn").addEventListener('click', endTurn);
+	document.querySelector('#idStartGameBtn').addEventListener('click', startGame);
+	document.querySelector('#idClueForm').addEventListener('submit', performSpymasterAction);
+	document.querySelector('#idEndTurnBtn').addEventListener('click', endTurn);
 });
 
 // send Username to Server
@@ -266,7 +266,7 @@ const setUsername = () => {
 const showPlayers = (players) => {
 
 	// for each button to join a team
-	document.querySelectorAll("#idButtonTeam").forEach(btn => {
+	document.querySelectorAll('#idButtonTeam').forEach(btn => {
 
 		// get team and role of this button
 		const data = btn.previousElementSibling.id; // z.B. idSpymaster2
@@ -291,9 +291,9 @@ const showPlayers = (players) => {
 const updateBoard = (words) => {
 	// for each word
 	words.forEach(word => {
-		const btn = document.getElementById(word.id);
+		const btn = document.querySelector(`#idWord${word.id}`);
 		// set style of word card
-		if (typeof word.team !== "undefined") btn.setAttribute('style', `${getStyle[word.team]}`);
+		if (typeof word.team !== 'undefined') btn.setAttribute('style', `${getStyle[word.team]}`);
 		// set text of word card
 		if (word.text) btn.childNodes[0].nodeValue = word.text;
 	});
@@ -301,13 +301,13 @@ const updateBoard = (words) => {
 
 // create game board
 const createBoard = (columns, rows) => {
-	const gameBoard = document.getElementById('idGameBoard');
+	const gameBoard = document.querySelector('#idGameBoard');
 	for (let i = 0; i < rows; i++) {
 		const div = document.createElement('div');
 		div.setAttribute('class', 'd-flex flex-row h-100 justify-content-between flex-grow-1 text-align-center');
 		for (let j = 0; j < columns; j++) {
-			const newWord = document.createElement("a");
-			newWord.setAttribute('id', `${i * columns + j}`)
+			const newWord = document.createElement('a');
+			newWord.setAttribute('id', `idWord${i * columns + j}`)
 			newWord.setAttribute('class', 'd-flex btn border dashedborder w-100 fw-bold m-1 align-items-center justify-content-center text-break');
 			//newWord.setAttribute('style', 'color: inherit;');
 			newWord.appendChild(document.createTextNode(''));
@@ -325,8 +325,8 @@ window.onload = () => {
 
 	// set client language as game language default
 	if (localStorage.getItem('language')) {
-		document.getElementById("idGameLanguageSelect").value = localStorage.getItem('language');
-		document.getElementById("idGameLanguageSelect").dispatchEvent(new Event('change'));
+		document.querySelector('#idGameLanguageSelect').value = localStorage.getItem('language');
+		document.querySelector('#idGameLanguageSelect').dispatchEvent(new Event('change'));
 	}
 
 	socket.on('connect', () => {
@@ -344,12 +344,12 @@ window.onload = () => {
 	});
 
 	socket.on('show game status', (data) => {
-		document.getElementById("idGameStatusMessage").firstChild.nodeValue = data.message;
+		document.querySelector('#idGameStatusMessage').firstChild.nodeValue = data.message;
 	});
 
 	socket.on('show settings', settings => {
-		document.getElementById("idSizeSelect").value = `${settings.board_size.x}x${settings.board_size.y}`;
-		document.getElementById("idGameLanguageSelect").value = settings.lang;
+		document.querySelector('#idSizeSelect').value = `${settings.board_size.x}x${settings.board_size.y}`;
+		document.querySelector('#idGameLanguageSelect').value = settings.lang;
 	});
 
 	socket.on('show players', players => {
@@ -357,8 +357,8 @@ window.onload = () => {
 	});
 
 	socket.on('start game', (data) => {
-		document.getElementById("idGameSettings").remove();
-		document.getElementById("idGameStatus").classList.remove('visually-hidden')
+		document.querySelector('#idGameSettings').remove();
+		document.querySelector('#idGameStatus').classList.remove('visually-hidden')
 		createBoard(data.board_size.x, data.board_size.y);
 	});
 
@@ -367,21 +367,21 @@ window.onload = () => {
 	});
 
 	socket.on('perform spymaster action', () => {
-		document.getElementById("idClueBtn").classList.remove('visually-hidden');
-		document.getElementById("idClueInput").value = "";
-		document.getElementById("idClueNumberInput").value = "";
+		document.querySelector('#idClueBtn').classList.remove('visually-hidden');
+		document.querySelector('#idClueInput').value = '';
+		document.querySelector('#idClueNumberInput').value = '';
 	});
 
 	socket.on('perform operative action', () => {
-		document.getElementById("idEndTurnBtn").classList.remove('visually-hidden');
+		document.querySelector('#idEndTurnBtn').classList.remove('visually-hidden');
 	});
 
 	socket.on('end game', data => {
 		if (data.winner_team) {
-			document.getElementById("idGameStatusMessage").firstChild.nodeValue = `Team ${data.winner_team} won the game!`;
+			document.querySelector('#idGameStatusMessage').firstChild.nodeValue = `Team ${data.winner_team} won the game!`;
 		} else if (data.looser_team) {
-			document.getElementById("idGameStatusMessage").firstChild.nodeValue = `Team ${data.looser_team} lost the game!`;
+			document.querySelector('#idGameStatusMessage').firstChild.nodeValue = `Team ${data.looser_team} lost the game!`;
 		}
-		tsParticles.load("tsparticles", particle);
+		tsParticles.load('tsparticles', particle);
 	});
 }

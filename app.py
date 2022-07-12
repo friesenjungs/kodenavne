@@ -143,8 +143,8 @@ def send_game_message(game_instance):
     emit("perform spymaster action", room=f"{game_instance.room_code}/Spymaster/{game_instance.current_team}")
     role_id_spymaster = db.Role.query.filter_by(role_name="Spymaster").first().role_id
     spymaster_name = game_instance.user_sessions.filter_by(team=game_instance.current_team, role_id=role_id_spymaster).first().user_name
-    emit("show game status", {"message": f"Waiting for spymaster {spymaster_name} ..."}, room=game_instance.room_code)
-    emit("show game status", {"message": "Give your operative a clue!"}, room=f"{game_instance.room_code}/Spymaster/{game_instance.current_team}")
+    emit("show game status", {"message": f"Waiting for Spymaster {spymaster_name} ..."}, room=game_instance.room_code)
+    emit("show game status", {"message": "Give your Operative a clue!"}, room=f"{game_instance.room_code}/Spymaster/{game_instance.current_team}")
 
 
 def next_team_turn(game_instance):
@@ -294,11 +294,11 @@ def join_room_socket(data):
                     operative_to_guess = game_instance.user_sessions.filter_by(team=game_instance.current_team, role_id=game_instance.current_team_role).first().user_name
                     emit("show game status", {"message": f"Hint for {operative_to_guess}: {game_instance.current_hint['hint']} - {game_instance.current_hint['amount'] - 1}"}, room=f"{game_instance.room_code}")
                 else:
-                    emit("show game status", {"message": f"Waiting for spymaster {spymaster_name} ..."}, room=game_instance.room_code)
+                    emit("show game status", {"message": f"Waiting for Spymaster {spymaster_name} ..."}, room=game_instance.room_code)
                 if game_instance.current_team_role == game_session.role_id:
                     if role_name == "Spymaster":
                         emit("perform spymaster action")
-                        emit("show game status", {"message": "Give your operative a clue!"}, room=f"{game_instance.room_code}/Spymaster/{game_instance.current_team}")
+                        emit("show game status", {"message": "Give your Operative a clue!"}, room=f"{game_instance.room_code}/Spymaster/{game_instance.current_team}")
                     else:
                         emit("perform operative action")
             else:
