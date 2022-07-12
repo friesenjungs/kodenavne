@@ -20,7 +20,8 @@ app.config.from_pyfile('config.py')
 db.database.init_app(app)
 migrate = Migrate(app, db.database)
 
-allowed_board_sizes = [
+RESTRICT_TEAM_NUMBER_JOIN = False
+ALLOWED_BOARD_SIZES = [
     {"x": 5, "y": 5},
     {"x": 5, "y": 6},
     {"x": 6, "y": 6},
@@ -29,7 +30,7 @@ allowed_board_sizes = [
     {"x": 7, "y": 8},
     {"x": 8, "y": 8}
 ]
-allowed_languages = [
+ALLOWED_LANGUAGES = [
     "en",
     "de"
 ]
@@ -125,6 +126,37 @@ def get_remaining_cards(game_session):
         remaining_words = game_session.game.gameset.words.filter_by(cardrole_id=team, turned_over=False).count()
         remaining_words_all[team] = remaining_words
     return remaining_words_all
+
+
+def get_session_data():
+    session_cookie = request.cookies.get("session")
+    if "game_session_ids" in session:
+        game_session = db.GameSession.query.filter_by(game_id=session["game_session_ids"][0],
+                                                      session_id=session["game_session_ids"][1]).first()
+        game_instance = game_session.game
+    else:
+        game_session = game_instance = None
+    return session_cookie, game_session, game_instance
+
+
+def send_game_message(game_instance):
+    emit("perform spymaster action", room=f"{game_instance.room_code}/Spymaster/{game_instance.current_team}")
+    role_id_spymaster = db.Role.query.filter_by(role_name="Spymaster").first().role_id
+    spymaster_name = game_instance.user_sessions.filter_by(team=game_instance.current_team, role_id=role_id_spymaster).first().user_name
+    emit("show gamestatus", {"message": f"Waiting for spymaster {spymaster_name}..."}, room=game_instance.room_code)
+    emit("show gamestatus", {"message": "Give your operative a clue!"}, room=f"{game_instance.room_code}/Spymaster/{game_instance.current_team}")
+
+
+def next_team_turn(game_instance):
+    next_team = game_instance.current_team
+    for i in range(1, 8):
+        if str((next_team + i) % 5) in game_instance.teams:
+            game_instance.current_team = (next_team + i) % 5
+            break
+    game_instance.current_team_role = db.Role.query.filter_by(role_name="Spymaster").first().role_id
+    game_instance.current_hint_amount = None
+    send_game_message(game_instance)
+    db.database.session.commit()
 
 
 @app.before_first_request
@@ -254,18 +286,10 @@ def join_room_socket(data):
         db.database.session.commit()
 
 
-@socketio.on("client message")
-def client_message_socket(data):
-    session_cookie = request.cookies.get("session")
-    print(f"Got message from {session_cookie}: {data['message']}")
-
-
 @socketio.on("set username")
 def set_username_socket(data):
-    session_cookie = request.cookies.get("session")
+    session_cookie, game_session, _ = get_session_data()
     if "username" in data and data["username"] is not None and data["username"] != "":
-        game_session = db.GameSession.query.filter_by(game_id=session["game_session_ids"][0],
-                                                      session_id=session["game_session_ids"][1]).first()
         game_session.user_name = data["username"]
         db.database.session.merge(game_session)
         db.database.session.commit()
@@ -279,15 +303,12 @@ def set_username_socket(data):
 
 @socketio.on("set setting")
 def set_setting_socket(data):
-    session_cookie = request.cookies.get("session")
-    game_session = db.GameSession.query.filter_by(game_id=session["game_session_ids"][0],
-                                                  session_id=session["game_session_ids"][1]).first()
-    if not game_session.game.started:
+    session_cookie, game_session, game_instance = get_session_data()
+    if not game_instance.started:
         if game_session.admin:
             changes = False
-            game_instance = db.Game.query.filter_by(game_id=game_session.game_id).first()
             if "board_size" in data:
-                if data["board_size"] in allowed_board_sizes:
+                if data["board_size"] in ALLOWED_BOARD_SIZES:
                     changes = True
                     print(f"User with cookie {session_cookie} updated board_size to {data['board_size']}")
                     game_instance.settings["board_size"] = data["board_size"]
@@ -301,7 +322,7 @@ def set_setting_socket(data):
                 else:
                     print(f"User with cookie {session_cookie} gave invalid setting for random ({data['random']})")
             if "lang" in data:
-                if data["lang"] in allowed_languages:
+                if data["lang"] in ALLOWED_LANGUAGES:
                     changes = True
                     print(f"User with cookie {session_cookie} updated language setting to {data['lang']}")
                     game_instance.settings["lang"] = data["lang"]
@@ -315,22 +336,22 @@ def set_setting_socket(data):
             else:
                 print(f"User with cookie {session_cookie} did not update settings")
         emit("show settings", game_session.game.settings, room=game_session.game.room_code)
-    return False
+        return False
 
 
 @socketio.on("set team")
 def set_team_socket(data):
-    session_cookie = request.cookies.get("session")
+    session_cookie, game_session, game_instance = get_session_data()
     if "team" in data and "role" in data and isinstance(data["team"], int) and isinstance(data["role"], str):
-        game_session = db.GameSession.query.filter_by(game_id=session["game_session_ids"][0],
-                                                      session_id=session["game_session_ids"][1]).first()
         if not game_session.game.started:
-            users_in_session = game_session.game.user_sessions
+            users_in_session = game_instance.user_sessions
 
-            # amount_of_users = len(users_in_session.filter_by(active=True).all())
-            # amount_of_teams = amount_of_users // 2 if amount_of_users % 2 == 0 else amount_of_users // 2 + 1
-            # amount_of_teams = amount_of_teams if amount_of_teams >= 2 else 2
-            amount_of_teams = 4
+            if RESTRICT_TEAM_NUMBER_JOIN:
+                amount_of_users = len(users_in_session.filter_by(active=True).all())
+                amount_of_teams = amount_of_users // 2 if amount_of_users % 2 == 0 else amount_of_users // 2 + 1
+                amount_of_teams = amount_of_teams if amount_of_teams >= 2 else 2
+            else:
+                amount_of_teams = 4
 
             chosen_role = db.Role.query.filter_by(role_name=data["role"]).first()
             if 0 < data["team"] <= amount_of_teams and chosen_role is not None:
@@ -350,26 +371,22 @@ def set_team_socket(data):
                     join_special_socket_rooms(game_session)
                     print(f"User with cookie {session_cookie} changed team to {game_session.team} and role to {chosen_role.role_name}")
                     emit("show players", get_users_json(game_session), room=game_session.game.room_code)
-                    return True
                 else:
                     print(f"Requested team and role from user with cookie {session_cookie} is already assigned")
             else:
                 print(f"Requested team number by user with cookie {session_cookie} is out of scope or role does not exist ({data})")
         else:
-            print(f"User with cookie {session_cookie} can't change teams - game {game_session.game.room_code} already started")
+            print(f"User with cookie {session_cookie} can't change teams - game {game_instance.room_code} already started")
     else:
         print(f"Malformed team and role data from {session_cookie}")
-    return False
 
 
 @socketio.on("start game")
 def start_game_socket():
-    session_cookie = request.cookies.get("session")
+    session_cookie, game_session, game_instance = get_session_data()
     reason = "Could not start game "
     if "game_session_ids" in session:
-        game_session = db.GameSession.query.filter_by(game_id=session["game_session_ids"][0],
-                                                      session_id=session["game_session_ids"][1]).first()
-        active_users_in_session = game_session.game.user_sessions.filter_by(active=True).all()
+        active_users_in_session = game_instance.user_sessions.filter_by(active=True).all()
         teams = {}
         for user in active_users_in_session:
             if user.team is not None:
@@ -380,11 +397,10 @@ def start_game_socket():
             reason += "- All active players must be assigned to a team"
         elif not all(element == 2 for element in team_sizes):
             reason += "- All teams must consist of two players"
-        elif not len(team_sizes) >= 2:
-            reason += "- You need at least two teams to play the game"
+        #elif not len(team_sizes) >= 2:
+        #    reason += "- You need at least two teams to play the game"
         else:
             if game_session.admin:
-                game_instance = db.Game.query.filter_by(game_id=game_session.game_id).first()
                 game_instance.started = True
 
                 amount_of_cards = game_instance.settings["board_size"]["x"] * game_instance.settings["board_size"]["y"]
@@ -416,91 +432,85 @@ def start_game_socket():
                 emit("show cards", get_words_json(game_instance, "Spymaster"), room=f"{game_instance.room_code}/Spymaster")
 
                 team_to_start = random.choice(list(map(int, teams.keys())))
-                emit("perform spymaster action", room=f"{game_instance.room_code}/Spymaster/{team_to_start}")
 
                 game_instance.teams = teams
                 game_instance.current_team = team_to_start
                 game_instance.current_team_role = db.Role.query.filter_by(role_name="Spymaster").first().role_id
                 db.database.session.commit()
+
+                send_game_message(game_instance)
                 return True
             else:
                 reason += " - You are not authorized"
         print(f"User with cookie {session_cookie} did not managed to start game (message: {reason})")
         emit("show toast", {"title": "Game error", "message": f"{reason}", "icon": "bi-x-octagon-fill"})
-    return False
+        return False
 
 
 @socketio.on("performed operative action")
 def performed_operative_action_socket(data):
-    session_cookie = request.cookies.get("session")
-    game_session = db.GameSession.query.filter_by(game_id=session["game_session_ids"][0],
-                                                  session_id=session["game_session_ids"][1]).first()
-    game_instance = game_session.game
+    session_cookie, game_session, game_instance = get_session_data()
     role_name = db.Role.query.filter_by(role_id=game_instance.current_team_role).first().role_name
     if "id" in data and game_session.team == game_instance.current_team and role_name == "Operative":
         word_to_turn = game_instance.gameset.words.filter_by(card_position=data["id"]).first()
-        if not word_to_turn.turned_over:
-            word_to_turn.turned_over = True
-            if word_to_turn.cardrole_id == db.CardRole.query.filter_by(cardrole_name="black").first().cardrole_id:
-                emit("end game", {"looser_team": game_session.team}, room=game_instance.room_code)
-                game_instance.current_team = word_to_turn.cardrole_id
-                game_instance.current_hint_amount = 0
-            all_remaining_cards = get_remaining_cards(game_session)
-            for key, value in all_remaining_cards.items():
-                if value == 0:
-                    emit("end game", {"winner_team": key}, room=game_instance.room_code)
+        if data["id"] == -1:
+            next_team_turn(game_instance)
+        elif word_to_turn is not None and game_instance.current_hint_amount != -1:
+            if not word_to_turn.turned_over:
+                word_to_turn.turned_over = True
+                emit("show cards", get_words_json(game_instance, "Operative"), room=f"{game_instance.room_code}/Operative")
+                emit("show cards", get_words_json(game_instance, "Spymaster"), room=f"{game_instance.room_code}/Spymaster")
+                if word_to_turn.cardrole_id == db.CardRole.query.filter_by(cardrole_name="black").first().cardrole_id:
+                    emit("end game", {"looser_team": game_session.team}, room=game_instance.room_code)
                     game_instance.current_team = word_to_turn.cardrole_id
                     game_instance.current_hint_amount = 0
-            if word_to_turn.cardrole_id != game_instance.current_team or game_instance.current_hint_amount == 1:
-                next_team = game_instance.current_team
-                for i in range(1, 8):
-                    if str((next_team+i) % 5) in game_instance.teams:
-                        game_instance.current_team = (next_team+i) % 5
-                        break
-                game_instance.current_team_role = db.Role.query.filter_by(role_name="Spymaster").first().role_id
-                game_instance.current_hint_amount = None
-                emit("perform spymaster action", room=f"{game_instance.room_code}/Spymaster/{game_instance.current_team}")
-            else:
-                game_instance.current_hint_amount = game_instance.current_hint_amount - 1
-            emit("show cards", get_words_json(game_instance, "Operative"), room=f"{game_instance.room_code}/Operative")
-            emit("show cards", get_words_json(game_instance, "Spymaster"), room=f"{game_instance.room_code}/Spymaster")
-            db.database.session.commit()
-            return True
+                all_remaining_cards = get_remaining_cards(game_session)
+                for key, value in all_remaining_cards.items():
+                    if value == 0:
+                        emit("end game", {"winner_team": key}, room=game_instance.room_code)
+                        game_instance.current_team = word_to_turn.cardrole_id
+                        game_instance.current_hint_amount = 0
+                if word_to_turn.cardrole_id != game_instance.current_team or game_instance.current_hint_amount == 1:
+                    next_team_turn(game_instance)
+                    return True, True
+                else:
+                    game_instance.current_hint_amount = game_instance.current_hint_amount - 1
+                    db.database.session.commit()
+                return True, False
     else:
         print(f"Malformed operative action from {session_cookie}")
-    return False
+    return False, False
 
 
 @socketio.on("performed spymaster action")
 def performed_spymaster_action_socket(data):
-    session_cookie = request.cookies.get("session")
-    game_session = db.GameSession.query.filter_by(game_id=session["game_session_ids"][0],
-                                                  session_id=session["game_session_ids"][1]).first()
-    game_instance = game_session.game
+    session_cookie, game_session, game_instance = get_session_data()
     role_name = db.Role.query.filter_by(role_id=game_instance.current_team_role).first().role_name
     if "hint" in data and "amount" in data and game_session.team == game_instance.current_team and role_name == "Spymaster":
         spymaster_data = {"hint": data["hint"], "amount": data["amount"]}
-        emit("show spymaster hint", spymaster_data, room=f"{game_session.game.room_code}")
-        game_session.game.current_team_role = db.Role.query.filter_by(role_name="Operative").first().role_id
-        game_session.game.current_hint_amount = int(data["amount"]) + 1
-        db.database.session.commit()
+        words = [game_word.word.word_content.upper() for game_word in game_instance.gameset.words.all()]
+        if data["hint"].strip().upper() not in words:
+            emit("show spymaster hint", spymaster_data, room=f"{game_session.game.room_code}")
+            game_session.game.current_team_role = db.Role.query.filter_by(role_name="Operative").first().role_id
+            game_session.game.current_hint_amount = int(data["amount"]) + 1
+            db.database.session.commit()
+            return True
     else:
         print(f"Malformed spymaster action from {session_cookie}")
+    return False
 
 
 @socketio.on('disconnect')
 def disconnect_socket():
-    session_cookie = request.cookies.get("session")
+    session_cookie, game_session, game_instance = get_session_data()
     print(f"User with cookie {session_cookie} disconnected from socket")
     if "game_session_ids" in session:
-        game_session = db.GameSession.query.filter_by(game_id=session["game_session_ids"][0],
-                                                      session_id=session["game_session_ids"][1]).first()
         game_session.active = False
         emit("show toast", {"title": "Player disconnected", "message": f"Oh no! {game_session.user_name} left the room", "icon:": "bi-exclamation-octagon-fill"}, room=game_session.game.room_code)
         if game_session.role_id is not None and game_session.team is not None:
             role_room = game_session.role.role_name
-            leave_room(f"{game_session.game.room_code}/{role_room}")
-            leave_room(f"{game_session.game.room_code}/{role_room}/{game_session.team}")
+            leave_room(f"{game_instance.room_code}/{role_room}")
+            leave_room(f"{game_instance.room_code}/{role_room}/{game_session.team}")
         if not game_session.game.started:
             game_session.team = None
             game_session.role_id = None
@@ -518,10 +528,10 @@ def disconnect_socket():
                 new_possible_admins) == 1 else new_possible_admins[0]
             new_admin.admin = True
             print(f"Player with username {new_admin.user_name} is the new admin of room with id {new_admin.game_id}")
-            emit("show toast", {"title": "New admin", "message": f"Player {new_admin.user_name} is the new admin", "icon": "bi-info-square-fill"}, room=game_session.game.room_code)
+            emit("show toast", {"title": "New admin", "message": f"{new_admin.user_name} is the new admin", "icon": "bi-info-square-fill"}, room=game_instance.room_code)
             db.database.session.merge(new_admin)
-        emit("show players", get_users_json(game_session), room=game_session.game.room_code)
-        leave_room(game_session.game.room_code)
+        emit("show players", get_users_json(game_session), room=game_instance.room_code)
+        leave_room(game_instance.room_code)
         db.database.session.merge(game_session)
         db.database.session.commit()
 
