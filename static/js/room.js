@@ -98,8 +98,8 @@ const performOperativeAction = (e) => {
 	e.preventDefault();
 
 	// send 'performed operative action' event with id of word card so server
-	socket.emit('performed operative action', { 'id': e.target.id }, (response) => {
-		if(response.endturn){
+	socket.emit('performed operative action', { 'id': e.target.id }, (successfull, endturn) => {
+		if(endturn){
 			document.getElementById("idEndTurnBtn").classList.add('visually-hidden');
 		}
 	});
@@ -109,10 +109,10 @@ const performOperativeAction = (e) => {
 const endTurn = () => {
 
 	// send performed operative action event to server
-	socket.emit('performed operative action', { 'id': -1 }, (response) => {
-		if (response.successfull) {
+	socket.emit('performed operative action', { 'id': -1 }, (successfull, endturn) => {
+		if (endturn) {
 			// hide end turn button
-			document.getElementById("idEndTurn").classList.add('visually-hidden');
+			document.getElementById("idEndTurnBtn").classList.add('visually-hidden');
 		}
 	});
 }
@@ -166,17 +166,10 @@ const showPlayers = (players) => {
 			btn.classList.remove('visually-hidden');
 		}
 	});
-
-	// saving player team and role in local storage
-	const me = players.filter(player => (player.me))[0];
-	console.log(me)
-	localStorage.setItem('team', me.team);
-	localStorage.setItem('role', me.role);
 }
 
 // update game board
 const updateBoard = (words) => {
-
 	// for each word
 	words.forEach(word => {
 		const btn = document.getElementById(word.id);
@@ -195,7 +188,7 @@ const createBoard = (columns, rows) => {
 		div.setAttribute('class', 'd-flex flex-row h-100 justify-content-between flex-grow-1 text-align-center');
 		for (let j = 0; j < columns; j++) {
 			const newWord = document.createElement("a");
-			newWord.setAttribute('id', `${i * rows + j}`)
+			newWord.setAttribute('id', `${i * columns + j}`)
 			newWord.setAttribute('class', 'd-flex btn border myborder w-100 fw-bold m-1 align-items-center justify-content-center text-break');
 			//newWord.setAttribute('style', 'color: inherit;');
 			newWord.appendChild(document.createTextNode(''));

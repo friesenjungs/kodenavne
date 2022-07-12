@@ -41,7 +41,7 @@ class Game(database.Model):
     teams = database.Column(MutableDict.as_mutable(JSONB))
     current_team = database.Column(database.Integer)
     current_team_role = database.Column(database.ForeignKey("ROLE.role_id"))
-    current_hint_amount = database.Column(database.Integer)
+    current_hint = database.Column(MutableDict.as_mutable(JSONB))
 
     gameset = relationship("GameSet", back_populates="game", uselist=False)
     user_sessions = relationship("GameSession", back_populates="game", lazy="dynamic")
@@ -51,6 +51,7 @@ class Game(database.Model):
         self.active = True
         self.started = False
         self.settings = {"board_size": {"x": 5, "y": 5}, "random": False, "lang": "en"}
+        self.current_hint = {"amount": 0, "hint": ""}
 
     def __repr__(self):
         return f'GAME<game_id:{self.game_id}, room_code:{self.room_code}>'

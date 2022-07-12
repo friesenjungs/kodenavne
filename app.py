@@ -96,7 +96,7 @@ def get_users_json(game_session):
 
 
 def get_words_json(game_instance, role):
-    game_words = game_instance.gameset.words.all()
+    game_words = game_instance.gameset.words.order_by(db.GameWord.card_position).all()
     words_json = []
     for game_word in game_words:
         game_word_json = {"id": game_word.card_position, "text": game_word.word.word_content}
@@ -154,7 +154,7 @@ def next_team_turn(game_instance):
             game_instance.current_team = (next_team + i) % 5
             break
     game_instance.current_team_role = db.Role.query.filter_by(role_name="Spymaster").first().role_id
-    game_instance.current_hint_amount = None
+    game_instance.current_hint["amount"] = None
     send_game_message(game_instance)
     db.database.session.commit()
 
@@ -274,11 +274,29 @@ def join_room_socket(data):
 
         emit("show players", get_users_json(game_session), room=game_session.game.room_code)
 
-        if game_session.game.started and game_session.role_id is not None and game_session.team is not None:
-            start_game_data = {"board_size": game_session.game.settings["board_size"]}
+        game_instance = game_session.game
+        if game_instance.started and game_session.role_id is not None and game_session.team is not None:
+            start_game_data = {"board_size": game_instance.settings["board_size"]}
             join_special_socket_rooms(game_session)
             emit("start game", start_game_data)
-            emit("show cards", get_words_json(game_session.game, game_session.role.role_name))
+            emit("show cards", get_words_json(game_instance, game_session.role.role_name))
+            role_name = db.Role.query.filter_by(role_id=game_instance.current_team_role).first().role_name
+            role_id_spymaster = db.Role.query.filter_by(role_name="Spymaster").first().role_id
+            spymaster_name = game_instance.user_sessions.filter_by(team=game_instance.current_team, role_id=role_id_spymaster).first().user_name
+            if game_instance.current_hint['amount'] != -1:
+                if role_name == "Operative":
+                    operative_to_guess = game_instance.user_sessions.filter_by(team=game_instance.current_team, role_id=game_instance.current_team_role).first().user_name
+                    emit("show game status", {"message": f"Hint for {operative_to_guess}: {game_instance.current_hint['hint']} - {game_instance.current_hint['amount'] - 1}"}, room=f"{game_instance.room_code}")
+                else:
+                    emit("show game status", {"message": f"Waiting for spymaster {spymaster_name} ..."}, room=game_instance.room_code)
+                if game_instance.current_team_role == game_session.role_id:
+                    if role_name == "Spymaster":
+                        emit("perform spymaster action")
+                        emit("show game status", {"message": "Give your operative a clue!"}, room=f"{game_instance.room_code}/Spymaster/{game_instance.current_team}")
+                    else:
+                        emit("perform operative action")
+            else:
+                emit("show game status", {"message": "Game terminated"})
         else:
             emit("show settings", game_session.game.settings)
 
@@ -397,8 +415,8 @@ def start_game_socket():
             reason += "- All active players must be assigned to a team"
         elif not all(element == 2 for element in team_sizes):
             reason += "- All teams must consist of two players"
-        #elif not len(team_sizes) >= 2:
-        #    reason += "- You need at least two teams to play the game"
+        elif not len(team_sizes) >= 2:
+            reason += "- You need at least two teams to play the game"
         else:
             if game_session.admin:
                 game_instance.started = True
@@ -455,26 +473,29 @@ def performed_operative_action_socket(data):
         word_to_turn = game_instance.gameset.words.filter_by(card_position=data["id"]).first()
         if data["id"] == -1:
             next_team_turn(game_instance)
-        elif word_to_turn is not None and game_instance.current_hint_amount != -1:
+            return True, True
+        elif word_to_turn is not None and game_instance.current_hint["amount"] != -1:
             if not word_to_turn.turned_over:
                 word_to_turn.turned_over = True
                 emit("show cards", get_words_json(game_instance, "Operative"), room=f"{game_instance.room_code}/Operative")
                 emit("show cards", get_words_json(game_instance, "Spymaster"), room=f"{game_instance.room_code}/Spymaster")
                 if word_to_turn.cardrole_id == db.CardRole.query.filter_by(cardrole_name="black").first().cardrole_id:
+                    emit("show game status", {"message": "Game terminated"}, room=game_instance.room_code)
                     emit("end game", {"looser_team": game_session.team}, room=game_instance.room_code)
                     game_instance.current_team = word_to_turn.cardrole_id
-                    game_instance.current_hint_amount = 0
+                    game_instance.current_hint["amount"] = 0
                 all_remaining_cards = get_remaining_cards(game_session)
                 for key, value in all_remaining_cards.items():
                     if value == 0:
+                        emit("show game status", {"message": "Game terminated"}, room=game_instance.room_code)
                         emit("end game", {"winner_team": key}, room=game_instance.room_code)
                         game_instance.current_team = word_to_turn.cardrole_id
-                        game_instance.current_hint_amount = 0
-                if word_to_turn.cardrole_id != game_instance.current_team or game_instance.current_hint_amount == 1:
+                        game_instance.current_hint["amount"] = 0
+                if word_to_turn.cardrole_id != game_instance.current_team or game_instance.current_hint["amount"] == 1:
                     next_team_turn(game_instance)
                     return True, True
                 else:
-                    game_instance.current_hint_amount = game_instance.current_hint_amount - 1
+                    game_instance.current_hint["amount"] = game_instance.current_hint["amount"] - 1
                     db.database.session.commit()
                 return True, False
     else:
@@ -490,9 +511,12 @@ def performed_spymaster_action_socket(data):
         spymaster_data = {"hint": data["hint"], "amount": data["amount"]}
         words = [game_word.word.word_content.upper() for game_word in game_instance.gameset.words.all()]
         if data["hint"].strip().upper() not in words:
-            emit("show spymaster hint", spymaster_data, room=f"{game_session.game.room_code}")
-            game_session.game.current_team_role = db.Role.query.filter_by(role_name="Operative").first().role_id
-            game_session.game.current_hint_amount = int(data["amount"]) + 1
+            game_instance.current_team_role = db.Role.query.filter_by(role_name="Operative").first().role_id
+            game_instance.current_hint["amount"] = int(data["amount"]) + 1
+            game_instance.current_hint["hint"] = data["hint"]
+            operative_to_guess = game_instance.user_sessions.filter_by(team=game_instance.current_team, role_id=game_instance.current_team_role).first().user_name
+            emit("show game status", {"message": f"Hint for {operative_to_guess}: {spymaster_data['hint']} - {spymaster_data['amount']}"}, room=f"{game_instance.room_code}")
+            emit("perform operative action", room=f"{game_instance.room_code}/Operative/{game_instance.current_team}")
             db.database.session.commit()
             return True
     else:
