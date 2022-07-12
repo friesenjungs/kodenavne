@@ -2,9 +2,9 @@ const namespace = '/';
 let socket;
 
 const icons = {
-	'info': 'bi-info-square-fill',
-	'warning': 'bi-exclamation-octagon-fill',
-	'error': 'bi-x-octagon-fill'
+	info: 'bi-info-square-fill',
+	warning: 'bi-exclamation-octagon-fill',
+	error: 'bi-x-octagon-fill'
 }
 
 // styling for word cards
@@ -200,7 +200,7 @@ const performSpymasterAction = () => {
 
 	// get clue and cluenumber
 	const clue = document.getElementById("idClueInput").value;
-	const cluenumber = parseInt(document.getElementById("idClueNumberInput").value);
+	const cluenumber = parseInt(document.getElementById("idClueNumberInput").value, 10);
 
 	// send 'performed spymaster action' event with clue and cluenumber to server
 	socket.emit('performed spymaster action', { 'hint': clue, 'amount': cluenumber }, (response) => {
@@ -257,7 +257,7 @@ const setUsername = () => {
 
 		// send 'set username' event with username to server
 		socket.emit('set username', { 'username': localStorage.getItem('username') }, (response) => {
-			if (!response) showToast('Error', 'Could not set username', icons['warning'], 'now');
+			if (!response) showToast('Error', 'Could not set username', icons.warning, 'now');
 		});
 	}
 }
@@ -293,7 +293,7 @@ const updateBoard = (words) => {
 	words.forEach(word => {
 		const btn = document.getElementById(word.id);
 		// set style of word card
-		if (word.team != undefined) btn.setAttribute('style', `${getStyle[word.team]}`);
+		if (typeof word.team !== "undefined") btn.setAttribute('style', `${getStyle[word.team]}`);
 		// set text of word card
 		if (word.text) btn.childNodes[0].nodeValue = word.text;
 	});
