@@ -1,6 +1,12 @@
 const namespace = '/';
 let socket;
 
+const icons =  {
+	'info': 'bi-info-square-fill',
+	'warning': 'bi-exclamation-octagon-fill',
+	'error': 'bi-x-octagon-fill'
+}
+
 // styling for word cards
 const getStyle = {
 	0: 'background-color: inherit; border-color: inherit !important; border-width: medium !important; color: inherit !important', // unknown
@@ -14,9 +20,8 @@ const getStyle = {
 
 // show Bootstrap Toast to communicate with user
 const showToast = (title, message, icon, subtitle) => {
-	console.log(`${title}: ${message} ${subtitle}`);
 	const toast =
-	`<div id="idToast" class="toast bg-light" role="alert" aria-live="assertive" aria-atomic="true">
+		`<div id="idToast" class="toast bg-light" role="alert" aria-live="assertive" aria-atomic="true">
 		<div class="toast-header">
 			<i id="idToastIcon" class="bi ${icon} me-2"></i>
 			<strong id="idToastHeader" class="me-auto">${title}</strong>
@@ -50,8 +55,8 @@ const changedSettings = () => {
 // called when a user wants to join a team with role
 const joinTeam = (e) => {
 
-	const btn = e.target;
-	const data = btn.previousElementSibling.id; // z.B. idSpymaster2
+	// get team and role of button
+	const data = e.target.previousElementSibling.id; // z.B. idSpymaster2
 	const team = parseInt(data.slice(-1), 10);
 	const role = data.slice(2, -1);
 
@@ -59,22 +64,16 @@ const joinTeam = (e) => {
 	socket.emit('set team', { team, role });
 }
 
-// called when admin starts the game
+// called when start game button is clicked
 const startGame = () => {
-
 	// send 'start game' event so server
 	socket.emit('start game');
-
-	// to be deleted
-	//const size = document.getElementById("idSizeSelect").value.split('x');
-	//document.getElementById("idGameSettings").remove();
-	//createBoard(size[0], size[1]);
-	//
 }
 
-// called when user clicks a word
+// called when word card is left-clicked
 const wordPressed = (e) => {
-	e.target.classList.toggle('border');// border-style toogles between solid and dashed
+	// toogle border-style between solid and dashed
+	e.target.classList.toggle('border');
 }
 
 // called when Spymaster sends clue
@@ -90,15 +89,32 @@ const performSpymasterAction = () => {
 			document.getElementById("idClueBtn").classList.add('visually-hidden');
 		}
 	});
-
-	// to be deleted
-	document.getElementById("idClueBtn").classList.add('visually-hidden');
-	//
 }
 
+// called when word card is right-clicked
 const performOperativeAction = (e) => {
+
+	// prevent contextMenu
 	e.preventDefault();
-	socket.emit('performed operative action', { 'id': e.target.id });
+
+	// send 'performed operative action' event with id of word card so server
+	socket.emit('performed operative action', { 'id': e.target.id }, (response) => {
+		if(response.endturn){
+			document.getElementById("idEndTurnBtn").classList.add('visually-hidden');
+		}
+	});
+}
+
+// called when end turn button is clicked
+const endTurn = () => {
+
+	// send performed operative action event to server
+	socket.emit('performed operative action', { 'id': -1 }, (response) => {
+		if (response) {
+			// hide end turn button
+			document.getElementById("idEndTurn").classList.add('visually-hidden');
+		}
+	});
 }
 
 // add EventListener when DOM ist loaded
@@ -111,33 +127,34 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 	document.getElementById("idStartGameBtn").addEventListener('click', startGame);
 	document.getElementById("idClueForm").addEventListener('submit', performSpymasterAction);
+	document.getElementById("idEndTurnBtn").addEventListener('click', endTurn);
 });
 
 // send Username to Server
 const setUsername = () => {
 
-	// only if there is a username in local storage
-	if (localStorage.getItem('username')) {
+	// only if there is a username in local storage and user ist connected to server
+	if (localStorage.getItem('username') && socket.connected) {
 
-		// only if user ist connected to server
-		if (socket.connected) {
-
-			// send 'set username' event with username to server
-			socket.emit('set username', { 'username': localStorage.getItem('username') });
-		}
+		// send 'set username' event with username to server
+		socket.emit('set username', { 'username': localStorage.getItem('username') }, (response) => {
+			if(!response) showToast('Error', 'Could not set username', icons['warning'], 'now');
+		});
 	}
 }
 
+// show all Players 
 const showPlayers = (players) => {
 
 	// for each button to join a team
 	document.querySelectorAll("#idButtonTeam").forEach(btn => {
 
+		// get team and role of this button
 		const data = btn.previousElementSibling.id; // z.B. idSpymaster2
 		const team = parseInt(data.slice(-1), 10);
 		const role = data.slice(2, -1);
 
-		// find entry for this player in players
+		// find entry of corresponding player in players
 		const player = players.filter(element => (element.role === role && element.team === team));
 
 		// if entry exists show player else show button
@@ -149,16 +166,23 @@ const showPlayers = (players) => {
 			btn.classList.remove('visually-hidden');
 		}
 	});
+
+	// saving player team and role in local storage
+	const me = players.filter(player => (player.me))[0];
+	console.log(me)
+	localStorage.setItem('team', me.team);
+	localStorage.setItem('role', me.role);
 }
 
 // update game board
 const updateBoard = (words) => {
 
+	// for each word
 	words.forEach(word => {
 		const btn = document.getElementById(word.id);
-		// set style for word card
+		// set style of word card
 		if (word.team != undefined) btn.setAttribute('style', `${getStyle[word.team]}`);
-		// set text
+		// set text of word card
 		if (word.text) btn.childNodes[0].nodeValue = word.text;
 	});
 }
@@ -173,7 +197,7 @@ const createBoard = (columns, rows) => {
 			const newWord = document.createElement("a");
 			newWord.setAttribute('id', `${i * rows + j}`)
 			newWord.setAttribute('class', 'd-flex btn border myborder w-100 fw-bold m-1 align-items-center justify-content-center text-break');
-			newWord.setAttribute('style', 'color: inherit;');
+			//newWord.setAttribute('style', 'color: inherit;');
 			newWord.appendChild(document.createTextNode(''));
 			newWord.addEventListener('click', wordPressed);
 			newWord.addEventListener('contextmenu', performOperativeAction);
@@ -207,6 +231,10 @@ window.onload = () => {
 		showToast(data.title, data.message, data.icon, data.time);
 	});
 
+	socket.on('show game status', (data) => {
+		document.getElementById("idGameStatusMessage").firstChild.nodeValue = data.message;
+	});
+
 	socket.on('show settings', settings => {
 		document.getElementById("idSizeSelect").value = `${settings.board_size.x}x${settings.board_size.y}`;
 		document.getElementById("idGameLanguageSelect").value = settings.lang;
@@ -218,23 +246,26 @@ window.onload = () => {
 
 	socket.on('start game', (data) => {
 		document.getElementById("idGameSettings").remove();
+		document.getElementById("idGameStatus").classList.remove('visually-hidden')
 		createBoard(data.board_size.x, data.board_size.y);
 	});
 
-	socket.on('show cards', data => {
-		updateBoard(data);
+	socket.on('show cards', cards => {
+		updateBoard(cards);
 	});
 
 	socket.on('show spymaster hint', data => {
-		console.log(data); //tbd
-	});
-
-	socket.on('perform operative action', data => {
-		console.log(data); //tbd
+		document.getElementById("idGameStatusMessage").firstChild.nodeValue = data.hint;
 	});
 
 	socket.on('perform spymaster action', () => {
 		document.getElementById("idClueBtn").classList.remove('visually-hidden');
+		document.getElementById("idClueInput").value = "";
+		document.getElementById("idClueNumberInput").value = "";
+	});
+
+	socket.on('perform operative action', () => {
+		document.getElementById("idEndTurnBtn").classList.remove('visually-hidden');
 	});
 
 	socket.on('end game', data => {

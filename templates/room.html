@@ -30,6 +30,20 @@
 		</div>
 
 		<div id="idGameBoard" class="d-flex flex-column align-self-center col-8 h-75">
+
+			<!--will be shown when game starts-->
+			<div id="idGameStatus" class="d-flex flex-row w-75 mb-3 mx-auto visually-hidden">
+				<div id="idGameStatusMessage"
+					 class="d-flex bg-white border border-dark flex-grow-1 rounded text-dark me-2 align-items-center p-1 justify-content-center fw-bold">
+					Game starting ...
+					<!--js inserting game status here-->
+				</div>
+				<a id="idClueBtn" class="btn btn-outline-primary ms-2 visually-hidden" data-bs-toggle="modal"
+				   data-bs-target="#idClueModal">Enter clue</a>
+				<a id="idEndTurnBtn" class="btn btn-outline-primary ms-2 visually-hidden">End turn</a>
+			</div>
+			<!---->
+
 			<!--JS inserting WordCards here-->
 			<!--will be deleted when game starts-->
 			<div id="idGameSettings" class="d-flex flex-column align-items-center justify-content-center h-100 w-100 rounded">
@@ -56,6 +70,7 @@
 				<a id="idStartGameBtn" class="btn btn-primary mt-3 fw-bold">Start Game</a>
 			</div>
 			<!---->
+
 		</div>
 
 		<div class="d-flex flex-column w-100 align-self-center mx-3">
@@ -74,8 +89,6 @@
 					<a id="idButtonTeam" class="btn btn-sm btn-warning fw-bold text-white">Join</a>
 			</div>
 
-			<a id="idClueBtn" class="btn btn-outline-primary mt-3 visually-hidden" data-bs-toggle="modal"
-			   data-bs-target="#idClueModal">Enter clue</a>
 			<div id="idClueModal" class="modal fade text-dark" tabindex="-1" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content rounded-4 shadow">
