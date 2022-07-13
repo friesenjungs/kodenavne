@@ -485,7 +485,7 @@ def start_game_socket():
 def performed_operative_action_socket(data):
     session_cookie, game_session, game_instance = get_session_data()
     if game_session is not None and game_instance is not None:
-        role_name = db.Role.query.filter_by(role_id=game_instance.current_team_role).first().role_name
+        role_name = db.Role.query.filter_by(role_id=game_session.role_id).first().role_name
         if "id" in data and game_session.team == game_instance.current_team and role_name == "Operative":
             word_to_turn = game_instance.gameset.words.filter_by(card_position=data["id"]).first()
             if data["id"] == -1:
