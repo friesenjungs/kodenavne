@@ -345,7 +345,7 @@ window.onload = () => {
 	});
 
 	socket.on('show toast', (data) => {
-		showToast(data.title, data.message, data.icon, data.time);
+		showToast(data.title, data.message, data.icon, data.subtitle);
 	});
 
 	socket.on('show game status', (data) => {
