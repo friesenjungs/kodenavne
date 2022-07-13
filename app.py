@@ -103,6 +103,7 @@ def get_words_json(game_instance, role):
         if role == "Operative" and not game_word.turned_over:
             game_word_json["team"] = 0
         else:
+            game_word_json["turned"] = game_word.turned_over
             game_word_json["team"] = game_word.cardrole_id
         words_json.append(game_word_json)
     return words_json
