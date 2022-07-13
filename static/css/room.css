@@ -1,31 +1,69 @@
+:root {
+	--team-neutral: white;
+	--team-blue: #0d6efd;
+	--team-red: #dc3545;
+	--team-green: #198754;
+	--team-orange: #ffc107; 
+	--team-black: black;
+}
+
+.roundedBorder {
+	border-radius: 8px
+}
+
+.teamborder {
+	border-style: solid;
+	border-width: thin;
+}
+
+.teamunknown {
+	border-color: black;
+}
 .teamblue {
-	border-style: solid;
-	border-color: #0d6efd;
-	border-width: thin;
-	border-radius: 8px;
+	border-color: var(--team-blue);
 }
-
 .teamred {
-	border-style: solid;
-	border-color: #dc3545;
-	border-width: thin;
-	border-radius: 8px;
+	border-color: var(--team-red);
 }
-
 .teamgreen {
-	border-style: solid;
-	border-color: #198754;
-	border-width: thin;
-	border-radius: 8px;
+	border-color: var(--team-green);
 }
-
 .teamorange {
-	border-style: solid;
-	border-color: #ffc107;
-	border-width: thin;
-	border-radius: 8px;
+	border-color: var(--team-orange);
+}
+.teamneutral {
+	border-color: black;
+}
+.teamblack {
+	border-color: var(--team-black);
 }
 
+.turnedteamblue {
+	border-color: black;
+	background-color: var(--team-blue);
+}
+.turnedteamred {
+	border-color: black;
+	background-color: var(--team-red);
+}
+.turnedteamgreen {
+	border-color: black;
+	background-color: var(--team-green);
+}
+.turnedteamorange {
+	border-color: black;
+	background-color: var(--team-orange);
+}
+.turnedteamneutral {
+	border-color: black;
+	background-color: white;
+	color:black;
+}
+
+.wordborder {
+	border-style: solid;
+	border-width: medium;
+}
 .dashedborder {
 	border-style: dashed !important;
 	border-width: medium !important;
