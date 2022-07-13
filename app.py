@@ -35,6 +35,9 @@ ALLOWED_LANGUAGES = [
     "de"
 ]
 
+# --------------------------------------------------------------------------------------------------- #
+# HELPER-FUNCTIONS
+
 
 def generate_unique_room_code():
     room_code = ""
@@ -103,6 +106,7 @@ def get_words_json(game_instance, role):
         if role == "Operative" and not game_word.turned_over:
             game_word_json["team"] = 0
         else:
+            game_word_json["turned"] = game_word.turned_over
             game_word_json["team"] = game_word.cardrole_id
         words_json.append(game_word_json)
     return words_json
@@ -157,6 +161,9 @@ def next_team_turn(game_instance):
     game_instance.current_hint["amount"] = None
     send_game_message(game_instance)
     db.database.session.commit()
+
+# --------------------------------------------------------------------------------------------------- #
+# FLASK-ROUTES
 
 
 @app.before_first_request
@@ -253,6 +260,9 @@ def impressum():
     """impressum page"""
     return render_template("impressum.html")
 
+# --------------------------------------------------------------------------------------------------- #
+# SOCKET-IO-EVENTS
+
 
 @socketio.on('connect')
 def connect_socket():
@@ -313,7 +323,7 @@ def join_room_socket(data):
 @socketio.on("set username")
 def set_username_socket(data):
     session_cookie, game_session, _ = get_session_data()
-    if "username" in data and data["username"] is not None and data["username"] != "":
+    if "username" in data and data["username"] is not None and data["username"] != "" and game_session is not None:
         game_session.user_name = data["username"]
         db.database.session.merge(game_session)
         db.database.session.commit()
@@ -328,7 +338,7 @@ def set_username_socket(data):
 @socketio.on("set setting")
 def set_setting_socket(data):
     session_cookie, game_session, game_instance = get_session_data()
-    if not game_instance.started:
+    if game_session is not None and game_instance is not None and not game_instance.started:
         if game_session.admin:
             changes = False
             if "board_size" in data:
@@ -366,7 +376,7 @@ def set_setting_socket(data):
 @socketio.on("set team")
 def set_team_socket(data):
     session_cookie, game_session, game_instance = get_session_data()
-    if "team" in data and "role" in data and isinstance(data["team"], int) and isinstance(data["role"], str):
+    if "team" in data and "role" in data and isinstance(data["team"], int) and isinstance(data["role"], str) and game_session is not None and game_instance is not None:
         if not game_session.game.started:
             users_in_session = game_instance.user_sessions
 
@@ -409,7 +419,7 @@ def set_team_socket(data):
 def start_game_socket():
     session_cookie, game_session, game_instance = get_session_data()
     reason = "Could not start game "
-    if "game_session_ids" in session:
+    if game_session is not None and game_instance is not None:
         active_users_in_session = game_instance.user_sessions.filter_by(active=True).all()
         teams = {}
         for user in active_users_in_session:
@@ -474,58 +484,60 @@ def start_game_socket():
 @socketio.on("performed operative action")
 def performed_operative_action_socket(data):
     session_cookie, game_session, game_instance = get_session_data()
-    role_name = db.Role.query.filter_by(role_id=game_instance.current_team_role).first().role_name
-    if "id" in data and game_session.team == game_instance.current_team and role_name == "Operative":
-        word_to_turn = game_instance.gameset.words.filter_by(card_position=data["id"]).first()
-        if data["id"] == -1:
-            next_team_turn(game_instance)
-            return True, True
-        elif word_to_turn is not None and game_instance.current_hint["amount"] != -1 and not word_to_turn.turned_over:
-            word_to_turn.turned_over = True
-            emit("show cards", get_words_json(game_instance, "Operative"), room=f"{game_instance.room_code}/Operative")
-            emit("show cards", get_words_json(game_instance, "Spymaster"), room=f"{game_instance.room_code}/Spymaster")
-            if word_to_turn.cardrole_id == db.CardRole.query.filter_by(cardrole_name="black").first().cardrole_id:
-                emit("show game status", {"message": "Game terminated"}, room=game_instance.room_code)
-                emit("end game", {"looser_team": game_session.team}, room=game_instance.room_code)
-                game_instance.current_team = word_to_turn.cardrole_id
-                game_instance.current_hint["amount"] = 0
-            all_remaining_cards = get_remaining_cards(game_session)
-            for key, value in all_remaining_cards.items():
-                if value == 0:
-                    emit("show game status", {"message": "Game terminated"}, room=game_instance.room_code)
-                    emit("end game", {"winner_team": key}, room=game_instance.room_code)
-                    game_instance.current_team = word_to_turn.cardrole_id
-                    game_instance.current_hint["amount"] = 0
-            if word_to_turn.cardrole_id != game_instance.current_team or game_instance.current_hint["amount"] == 1:
+    if game_session is not None and game_instance is not None:
+        role_name = db.Role.query.filter_by(role_id=game_instance.current_team_role).first().role_name
+        if "id" in data and game_session.team == game_instance.current_team and role_name == "Operative":
+            word_to_turn = game_instance.gameset.words.filter_by(card_position=data["id"]).first()
+            if data["id"] == -1:
                 next_team_turn(game_instance)
                 return True, True
-            else:
-                game_instance.current_hint["amount"] = game_instance.current_hint["amount"] - 1
-                db.database.session.commit()
-            return True, False
-    else:
-        print(f"Malformed operative action from {session_cookie}")
+            elif word_to_turn is not None and game_instance.current_hint["amount"] != -1 and not word_to_turn.turned_over:
+                word_to_turn.turned_over = True
+                emit("show cards", get_words_json(game_instance, "Operative"), room=f"{game_instance.room_code}/Operative")
+                emit("show cards", get_words_json(game_instance, "Spymaster"), room=f"{game_instance.room_code}/Spymaster")
+                if word_to_turn.cardrole_id == db.CardRole.query.filter_by(cardrole_name="black").first().cardrole_id:
+                    emit("show game status", {"message": "Game terminated"}, room=game_instance.room_code)
+                    emit("end game", {"looser_team": game_session.team}, room=game_instance.room_code)
+                    game_instance.current_team = word_to_turn.cardrole_id
+                    game_instance.current_hint["amount"] = 0
+                all_remaining_cards = get_remaining_cards(game_session)
+                for key, value in all_remaining_cards.items():
+                    if value == 0:
+                        emit("show game status", {"message": "Game terminated"}, room=game_instance.room_code)
+                        emit("end game", {"winner_team": key}, room=game_instance.room_code)
+                        game_instance.current_team = word_to_turn.cardrole_id
+                        game_instance.current_hint["amount"] = 0
+                if word_to_turn.cardrole_id != game_instance.current_team or game_instance.current_hint["amount"] == 1:
+                    next_team_turn(game_instance)
+                    return True, True
+                else:
+                    game_instance.current_hint["amount"] = game_instance.current_hint["amount"] - 1
+                    db.database.session.commit()
+                return True, False
+        else:
+            print(f"Malformed operative action from {session_cookie}")
     return False, False
 
 
 @socketio.on("performed spymaster action")
 def performed_spymaster_action_socket(data):
     session_cookie, game_session, game_instance = get_session_data()
-    role_name = db.Role.query.filter_by(role_id=game_instance.current_team_role).first().role_name
-    if "hint" in data and "amount" in data and game_session.team == game_instance.current_team and role_name == "Spymaster":
-        spymaster_data = {"hint": data["hint"], "amount": data["amount"]}
-        words = [game_word.word.word_content.upper() for game_word in game_instance.gameset.words.all()]
-        if data["hint"].strip().upper() not in words:
-            game_instance.current_team_role = db.Role.query.filter_by(role_name="Operative").first().role_id
-            game_instance.current_hint["amount"] = int(data["amount"]) + 1
-            game_instance.current_hint["hint"] = data["hint"]
-            operative_to_guess = game_instance.user_sessions.filter_by(team=game_instance.current_team, role_id=game_instance.current_team_role).first().user_name
-            emit("show game status", {"message": f"Hint for {operative_to_guess}: {spymaster_data['hint']} - {spymaster_data['amount']}"}, room=f"{game_instance.room_code}")
-            emit("perform operative action", room=f"{game_instance.room_code}/Operative/{game_instance.current_team}")
-            db.database.session.commit()
-            return True
-    else:
-        print(f"Malformed spymaster action from {session_cookie}")
+    if game_session is not None and game_instance is not None:
+        role_name = db.Role.query.filter_by(role_id=game_instance.current_team_role).first().role_name
+        if "hint" in data and "amount" in data and game_session.team == game_instance.current_team and role_name == "Spymaster":
+            spymaster_data = {"hint": data["hint"], "amount": data["amount"]}
+            words = [game_word.word.word_content.upper() for game_word in game_instance.gameset.words.all()]
+            if data["hint"].strip().upper() not in words:
+                game_instance.current_team_role = db.Role.query.filter_by(role_name="Operative").first().role_id
+                game_instance.current_hint["amount"] = int(data["amount"]) + 1
+                game_instance.current_hint["hint"] = data["hint"]
+                operative_to_guess = game_instance.user_sessions.filter_by(team=game_instance.current_team, role_id=game_instance.current_team_role).first().user_name
+                emit("show game status", {"message": f"Hint for {operative_to_guess}: {spymaster_data['hint']} - {spymaster_data['amount']}"}, room=f"{game_instance.room_code}")
+                emit("perform operative action", room=f"{game_instance.room_code}/Operative/{game_instance.current_team}")
+                db.database.session.commit()
+                return True
+        else:
+            print(f"Malformed spymaster action from {session_cookie}")
     return False
 
 
@@ -533,7 +545,7 @@ def performed_spymaster_action_socket(data):
 def disconnect_socket():
     session_cookie, game_session, game_instance = get_session_data()
     print(f"User with cookie {session_cookie} disconnected from socket")
-    if "game_session_ids" in session:
+    if game_session is not None and game_instance is not None:
         game_session.active = False
         emit("show toast", {"title": "Player disconnected", "message": f"Oh no! {game_session.user_name} left the room", "icon:": "bi-exclamation-octagon-fill"}, room=game_session.game.room_code)
         if game_session.role_id is not None and game_session.team is not None:

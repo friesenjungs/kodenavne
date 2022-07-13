@@ -7,15 +7,14 @@ const icons = {
 	error: 'bi-x-octagon-fill'
 }
 
-// styling for word cards
-const getStyle = {
-	0: 'background-color: inherit; border-color: inherit !important; border-width: medium !important; color: inherit !important', // unknown
-	1: 'background-color: #0d6efd !important; border-color: black !important; border-width: medium !important; color: white',	// team 1
-	2: 'background-color: #dc3545; border-color: black !important; border-width: medium !important; color: white', // team 2
-	3: 'background-color: #198754; border-color: black !important; border-width: medium !important; color: white', // team 3
-	4: 'background-color: #ffc107; border-color: black !important; border-width: medium !important; color: white', // team 4
-	5: 'background-color: white; border-color: inherit !important; border-width: medium !important; color: black', // neutral card
-	6: 'background-color: black; border-color: white !important; border-width: medium !important; color: white' // black card
+const getWordStyle = {
+	0: 'teamunknwon',
+	1: 'teamblue',
+	2: 'teamred',
+	3: 'teamgreen',
+	4: 'teamorange',
+	5: 'teamneutral',
+	6: 'teamblack'
 }
 
 const particle = {
@@ -192,7 +191,7 @@ const startGame = () => {
 // called when word card is left-clicked
 const wordPressed = (e) => {
 	// toogle border-style between solid and dashed
-	e.target.classList.toggle('border');
+	e.target.classList.toggle('dashedborder');
 }
 
 // called when Spymaster sends clue
@@ -293,7 +292,14 @@ const updateBoard = (words) => {
 	words.forEach(word => {
 		const btn = document.querySelector(`#idWord${word.id}`);
 		// set style of word card
-		if (typeof word.team !== 'undefined') btn.setAttribute('style', `${getStyle[word.team]}`);
+		if (typeof word.team !== 'undefined') {
+			if (!word.turned) {
+				btn.classList.add(`${getWordStyle[word.team]}`);
+			} else {
+				btn.classList.remove(`${getWordStyle[word.team]}`);
+				btn.classList.add(`turned${getWordStyle[word.team]}`);
+			}
+		}
 		// set text of word card
 		if (word.text) btn.childNodes[0].nodeValue = word.text;
 	});
@@ -306,10 +312,9 @@ const createBoard = (columns, rows) => {
 		const div = document.createElement('div');
 		div.setAttribute('class', 'd-flex flex-row h-100 justify-content-between flex-grow-1 text-align-center');
 		for (let j = 0; j < columns; j++) {
-			const newWord = document.createElement('a');
+			const newWord = document.createElement('div');
 			newWord.setAttribute('id', `idWord${i * columns + j}`)
-			newWord.setAttribute('class', 'd-flex btn border dashedborder w-100 fw-bold m-1 align-items-center justify-content-center text-break');
-			//newWord.setAttribute('style', 'color: inherit;');
+			newWord.setAttribute('class', 'd-flex wordborder roundedBorder w-100 fw-bold m-1 align-items-center justify-content-center text-break');
 			newWord.appendChild(document.createTextNode(''));
 			newWord.addEventListener('click', wordPressed);
 			newWord.addEventListener('contextmenu', performOperativeAction);
