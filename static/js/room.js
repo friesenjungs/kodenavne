@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	document.querySelector('#idSizeSelect').addEventListener('change', changedSettings);
 	document.querySelector('#idGameLanguageSelect').addEventListener('change', changedSettings);
-	document.querySelectorAll('#idButtonTeam').forEach(btn => {
+	document.querySelectorAll('.teambtn').forEach(btn => {
 		btn.addEventListener('click', joinTeam);
 	});
 	document.querySelector('#idStartGameBtn').addEventListener('click', startGame);
@@ -265,7 +265,7 @@ const setUsername = () => {
 const showPlayers = (players) => {
 
 	// for each button to join a team
-	document.querySelectorAll('#idButtonTeam').forEach(btn => {
+	document.querySelectorAll('.teambtn').forEach(btn => {
 
 		// get team and role of this button
 		const data = btn.previousElementSibling.id; // z.B. idSpymaster2
@@ -345,7 +345,7 @@ window.onload = () => {
 	});
 
 	socket.on('show toast', (data) => {
-		showToast(data.title, data.message, data.icon, data.time);
+		showToast(data.title, data.message, data.icon, data.subtitle);
 	});
 
 	socket.on('show game status', (data) => {

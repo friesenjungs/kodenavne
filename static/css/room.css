@@ -35,7 +35,8 @@
 	border-color: black;
 }
 .teamblack {
-	border-color: var(--team-black);
+	border-color: white;
+	background-color: black;
 }
 
 .turnedteamblue {
@@ -58,6 +59,10 @@
 	border-color: black;
 	background-color: white;
 	color:black;
+}
+.turnedteamblack {
+	border-color: black;
+	background-color: black;
 }
 
 .wordborder {

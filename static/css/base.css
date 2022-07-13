@@ -1,3 +1,4 @@
 #idHowtoPlayButton:hover {
 	color: gray !important;
+	cursor: pointer;
 }
