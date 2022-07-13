@@ -37,8 +37,8 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav me-auto align-middle">
 						<li class="nav-item">
-							<a type="button" id="idHowtoPlayButton" data-bs-toggle="modal" data-bs-target="#idHowtoPlayModal"
-							   style="color:inherit">How to play!</a>
+							<div id="idHowtoPlayButton" data-bs-toggle="modal" data-bs-target="#idHowtoPlayModal"
+							   style="color:inherit">How to play!</div>
 							<div id="idHowtoPlayModal" class="modal fade text-dark" tabindex="-1"
 								 aria-labelledby="idHowtoPlayModalTitle"
 								 aria-hidden="true">
@@ -54,7 +54,7 @@
 											<h5>General</h5>
 											<p>
 												Kodenavne is a game for two teams. There is one Spymaster and at least
-												one Operative per team. It is played with a grid of 25 words, some of
+												one Operative per team. It is played with a grid of 25 to 64 words, some of
 												them assigned to one of the teams. Only the Spymaster can see which
 												words belong to which team. The Spymasters take turns giving a clue to
 												their Operative, trying to guide him to guess their team's words. The
@@ -68,14 +68,14 @@
 											</p>
 											<h5>The Operative</h5>
 											<p>
-												The Operatives guess the team's words based on the Spymaster's clue. If
+												The Operative guesses the team's words based on the Spymaster's clue. If
 												the Operative guesses a word correctly, he may guess again. The goal is
 												to guess as many words as the Spymaster has indicated. He can also guess
 												unsolved clues from previous rounds until the maximum number of guesses
 												(clue number + 1) is reached.
 												The turn can end in different ways. If a word is revealed on a neutral
 												card or in the opponent's color, the Operative may not give another
-												Guess. The turn can also be ended manually or by reaching the maximum
+												guess. The turn can also be ended manually or by reaching the maximum
 												number of guesses.
 											</p>
 											<h5>Winning and loosing</h5>
@@ -106,7 +106,7 @@
 						<a id="idToggleThemeBtn" class="btn btn-outline-primary me-1"><i id="idTheme"
 							   class="bi bi-moon"></i></a>
 						<a id="idSettingsBtn" class="btn btn-outline-primary" data-bs-toggle="modal"
-						   data-bs-target="#idSettingsModal"><i id="idTheme" class="bi bi-gear"></i></a>
+						   data-bs-target="#idSettingsModal"><i class="bi bi-gear"></i></a>
 						<div id="idSettingsModal" class="modal fade text-dark" tabindex="-1" aria-hidden="true">
 							<div class="modal-dialog">
 								<div class="modal-content rounded-4 shadow">
