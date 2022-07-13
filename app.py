@@ -282,7 +282,7 @@ def join_room_socket(data):
         session["game_session_ids"] = (game_session.game_id, game_session.session_id)
         game_session.active = True
 
-        emit("show toast", {"title": "New player", "message": f"Let's welcome {game_session.user_name} in the room", "icon": "bi-info-square-fill"},
+        emit("show toast", {"title": "New player", "message": f"Let's welcome {game_session.user_name} in the room", "icon": "bi-info-square-fill", "subtitle": ""},
              room=requested_room_code)
         join_room(requested_room_code)
 
@@ -477,7 +477,7 @@ def start_game_socket():
             else:
                 reason += " - You are not authorized"
         print(f"User with cookie {session_cookie} did not managed to start game (message: {reason})")
-        emit("show toast", {"title": "Game error", "message": f"{reason}", "icon": "bi-x-octagon-fill"})
+        emit("show toast", {"title": "Game error", "message": f"{reason}", "icon": "bi-x-octagon-fill", "subtitle": ""})
         return False
 
 
@@ -485,7 +485,7 @@ def start_game_socket():
 def performed_operative_action_socket(data):
     session_cookie, game_session, game_instance = get_session_data()
     if game_session is not None and game_instance is not None:
-        role_name = db.Role.query.filter_by(role_id=game_instance.current_team_role).first().role_name
+        role_name = db.Role.query.filter_by(role_id=game_session.role_id).first().role_name
         if "id" in data and game_session.team == game_instance.current_team and role_name == "Operative":
             word_to_turn = game_instance.gameset.words.filter_by(card_position=data["id"]).first()
             if data["id"] == -1:
@@ -547,7 +547,7 @@ def disconnect_socket():
     print(f"User with cookie {session_cookie} disconnected from socket")
     if game_session is not None and game_instance is not None:
         game_session.active = False
-        emit("show toast", {"title": "Player disconnected", "message": f"Oh no! {game_session.user_name} left the room", "icon:": "bi-exclamation-octagon-fill"}, room=game_session.game.room_code)
+        emit("show toast", {"title": "Player disconnected", "message": f"Oh no! {game_session.user_name} left the room", "icon:": "bi-exclamation-octagon-fill", "subtitle": ""}, room=game_session.game.room_code)
         if game_session.role_id is not None and game_session.team is not None:
             role_room = game_session.role.role_name
             leave_room(f"{game_instance.room_code}/{role_room}")
@@ -569,7 +569,7 @@ def disconnect_socket():
                 new_possible_admins) == 1 else new_possible_admins[0]
             new_admin.admin = True
             print(f"Player with username {new_admin.user_name} is the new admin of room with id {new_admin.game_id}")
-            emit("show toast", {"title": "New admin", "message": f"{new_admin.user_name} is the new admin", "icon": "bi-info-square-fill"}, room=game_instance.room_code)
+            emit("show toast", {"title": "New admin", "message": f"{new_admin.user_name} is the new admin", "icon": "bi-info-square-fill", "subtitle": ""}, room=game_instance.room_code)
             db.database.session.merge(new_admin)
         emit("show players", get_users_json(game_session), room=game_instance.room_code)
         leave_room(game_instance.room_code)
